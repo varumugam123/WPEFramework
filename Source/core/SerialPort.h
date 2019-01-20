@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <poll.h>
+#include <stdarg.h>
 #endif
 #include "Portability.h"
 #include "ResourceMonitor.h"
@@ -24,6 +25,12 @@ namespace Core {
         friend class SerialMonitor;
 
     public:
+        enum FlowControl {
+            OFF,
+            SOFTWARE,
+            HARDWARE
+        };
+
         enum BaudRate {
             BAUDRATE_0 = B0, /* HANG UP */
 
@@ -38,8 +45,19 @@ namespace Core {
             BAUDRATE_38400 = B38400,
             BAUDRATE_57600 = B57600,
             BAUDRATE_115200 = B115200,
-
+#ifdef B230400
+            BAUDRATE_230400 = B230400,
+#endif
+#ifdef B460800
+            BAUDRATE_460800 = B460800,
+#endif
             BAUDRATE_500000 = B500000,
+#ifdef B576000
+            BAUDRATE_576000 = B576000,
+#endif
+#ifdef B921600
+            BAUDRATE_921600 = B921600,
+#endif
             BAUDRATE_1000000 = B1000000,
             BAUDRATE_1152000 = B1152000,
             BAUDRATE_1500000 = B1500000,
@@ -47,6 +65,9 @@ namespace Core {
             BAUDRATE_2500000 = B2500000,
             BAUDRATE_3000000 = B3000000,
             BAUDRATE_3500000 = B3500000,
+#ifdef B3710000
+            BAUDRATE_3710000 = B3710000,
+#endif
             BAUDRATE_4000000 = B4000000
         };
 
@@ -72,7 +93,6 @@ namespace Core {
         typedef enum {
             READ = 0x0001,
             WRITE = 0x0002,
-            WRITESLOT = 0x0100,
             EXCEPTION = 0x0200,
             OPEN = 0x0400,
 
@@ -100,14 +120,17 @@ namespace Core {
 
     public:
         SerialPort();
+        SerialPort(const string& port);
         SerialPort(
             const string& port,
             const BaudRate baudRate,
             const Parity parityE,
             const DataBits dataBits,
             const StopBits stopBits,
+            const FlowControl flowControl,
             const uint16_t sendBufferSize,
             const uint16_t receiveBufferSize);
+ 
         virtual ~SerialPort();
 
     public:
@@ -137,6 +160,10 @@ namespace Core {
             m_ReadBytes = 0;
             m_SendOffset = 0;
             m_SendBytes = 0;
+            #ifndef __WIN32__ 
+            tcflush(m_Descriptor, TCIOFLUSH);
+            #endif
+      
             m_syncAdmin.Unlock();
         }
         inline const string& LocalId() const
@@ -151,22 +178,56 @@ namespace Core {
         uint32_t Open(uint32_t waitTime);
         uint32_t Close(uint32_t waitTime);
         void Trigger();
-        void Configuration();
 
         // Methods to extract and insert data into the socket buffers
         virtual uint16_t SendData(uint8_t* dataFrame, const uint16_t maxSendSize) = 0;
         virtual uint16_t ReceiveData(uint8_t* dataFrame, const uint16_t receivedSize) = 0;
         virtual void StateChange() = 0;
 
-        // Signal a state change, Opened, Closed or Accepted
         bool Configuration(
             const string& port,
             const BaudRate baudRate,
             const Parity parity,
             const DataBits dataBits,
             const StopBits stopBits,
+            const FlowControl flowControl,
             const uint16_t sendBufferSize,
             const uint16_t receiveBufferSize);
+
+        bool Configuration(
+            const BaudRate baudRate,
+            const FlowControl flowControl,
+            const uint16_t sendBufferSize,
+            const uint16_t receiveBufferSize);
+
+        void SetBaudRate(const BaudRate baudrate) {
+            #ifdef __WIN32__
+            m_PortSettings.BaudRate = baudrate;
+            if (m_Descriptor != INVALID_HANDLE_VALUE) {
+                // TODO implementa on the fly changes..
+                ASSERT(false);
+            }
+            #else
+            cfsetospeed(&m_PortSettings, baudrate);
+	    cfsetispeed(&m_PortSettings, baudrate);
+            if (m_Descriptor != -1) {
+                
+	        if (tcsetattr(m_Descriptor, TCSANOW, &m_PortSettings) < 0) {
+		    TRACE_L1("Error setting a new speed: %d", -errno);
+                }
+            }
+            #endif
+        }
+        void SendBreak() {
+            #ifdef __WIN32__
+			// TODO: Implement a windows variant..
+            ASSERT(false);
+            #else
+	    if (m_Descriptor != -1) {
+                tcsendbreak(m_Descriptor, 0);
+            }
+            #endif
+        }
 
     private:
         void Opened() {
@@ -177,7 +238,7 @@ namespace Core {
             StateChange();
             m_State = 0;
         }
-        bool WaitForClosure(const uint32_t time) const;
+        uint32_t WaitForClosure(const uint32_t time) const;
 #ifdef __WIN32__
         void Write(const uint16_t writtenBytes);
         void Read(const uint16_t readBytes);
@@ -208,7 +269,7 @@ namespace Core {
     private:
         mutable CriticalSection m_syncAdmin;
         string m_PortName;
-        uint16_t m_State;
+        volatile uint16_t m_State;
         uint16_t m_SendBufferSize;
         uint16_t m_ReceiveBufferSize;
         uint8_t* m_SendBuffer;

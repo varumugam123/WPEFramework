@@ -6,8 +6,8 @@
 
 // ---- Include local include files ----
 #include "Portability.h"
-#include "DataStorage.h"
 #include "Serialization.h"
+#include "Proxy.h"
 
 namespace WPEFramework {
 namespace Core {
@@ -37,7 +37,7 @@ namespace Core {
         DataStore& operator= (const DataStore&) = delete;
 
     public:
-        DataStore(const uint32_t size = 1024) 
+        DataStore(const uint32_t size = 1024)
             : _size(size)
             , _buffer(reinterpret_cast<uint8_t*>(::malloc(size))) {
             ASSERT(_buffer != nullptr);
@@ -55,10 +55,10 @@ namespace Core {
         inline void Copy(const uint8_t data[], const uint16_t length, const uint16_t offset = 0) {
             ASSERT (offset < _size);
             if (offset < _size) {
-                ASSERT (offset + length <= _size);
+                ASSERT (static_cast<uint32_t>(offset + length) <= _size);
 
-                uint32_t count (offset + length <= _size ? length : _size - offset);
-                
+                uint32_t count (static_cast<uint32_t>(offset + length) <= _size ? length : _size - offset);
+
                 ::memcpy (&(_buffer[offset]), data, count);
             }
         }
@@ -83,7 +83,7 @@ namespace Core {
 
     private:
         uint32_t _size;
-        uint8_t* _buffer;    
+        uint8_t* _buffer;
     };
 
     class EXTERNAL DataElement {
@@ -198,16 +198,15 @@ namespace Core {
         template <typename TYPE>
         inline void Align() {
             if (m_Buffer != nullptr) {
-                size_t size (m_MaxSize);
-                uint8_t adjust(~0);
-                void* newPointer = m_Buffer; 
+                size_t size (static_cast<size_t>(m_MaxSize));
+                void* newPointer = m_Buffer;
                 if (std::align(sizeof(TYPE), sizeof(TYPE), newPointer, size)) {
-                    uint8_t adjust (m_MaxSize - size);
+                    uint8_t adjust (static_cast<uint8_t>(m_MaxSize - size));
                     m_Buffer = reinterpret_cast<uint8_t*>(newPointer);
                     m_Size = (adjust < m_Size ? (m_Size - adjust) : 0);
                     m_MaxSize -= adjust;
+                    TRACE_L1("Aligning the memory buffer by %d bytes to %p !!!\n\n", adjust, m_Buffer);
                 }
-                printf ("Aligning the memory buffer by %d bytes to %p !!!\n\n", adjust, m_Buffer);
             }
         }
         inline uint64_t AllocatedSize() const
@@ -228,13 +227,13 @@ namespace Core {
         }
         inline bool operator==(const DataElement& RHS) const
         {
-            return ((m_Size == RHS.m_Size) && (::memcmp(m_Buffer, RHS.m_Buffer, m_Size) == 0));
+            return ((m_Size == RHS.m_Size) && (::memcmp(m_Buffer, RHS.m_Buffer, static_cast<size_t>(m_Size)) == 0));
         }
         inline bool operator!=(const DataElement& RHS) const
         {
             return (!operator==(RHS));
         }
- 
+
         virtual uint64_t Size() const
         {
             return (m_Size);
@@ -633,7 +632,7 @@ namespace Core {
             ASSERT((offset + size) <= m_Size);
 
             // Nope, one plain copy !!!
-            ::memcpy(&m_Buffer[offset], buffer, size);
+            ::memmove(&m_Buffer[offset], buffer, size);
         }
 
         bool Size(const uint64_t size)
@@ -663,10 +662,10 @@ namespace Core {
                 // We need to "extend" the buffer, this is only possible if we control
                 // the buffer lifetime..
                 // Create a new buffer
-		m_Storage->Size(static_cast<uint32_t>(size));
-		m_Buffer = &(m_Storage->Buffer()[static_cast<uint32_t>(m_Offset)]);
-		m_Size = size;
-		m_MaxSize = m_Storage->Size();
+        m_Storage->Size(static_cast<uint32_t>(size));
+        m_Buffer = &(m_Storage->Buffer()[static_cast<uint32_t>(m_Offset)]);
+        m_Size = size;
+        m_MaxSize = m_Storage->Size();
             }
         }
 

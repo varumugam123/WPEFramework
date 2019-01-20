@@ -102,7 +102,7 @@ endif()
 
 #FIXME: We shouldn't touch cflags...
 if(WPEFRAMEWORK_TEST_MEASUREMENTS)
-    list(APPEND CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
     set(CMAKE_EXE_LINKER_FLAGS -lgcov)
 endif ()
 
@@ -122,6 +122,7 @@ add_definitions(-DBUILDREF_WPEFRAMEWORK=${BUILDREF_WPEFRAMEWORK})
 # We are introducing *_ARTIFACT variables, that enable linking to already built targets.
 # These need to be defined here, contrary to inside the module folder, as variables are not normally exported to the parent.
 # The *_ARTIFACT variables are also used as the names of generated libraries, so you can link against them by using the variables.
+set(WPEPROCESS_ARTIFACT WPEProcess)
 
 if(WPEFRAMEWORK_LIBWPEFRAMEWORK)
     set(CORE_ARTIFACT ${NAMESPACE}Core)
@@ -181,7 +182,6 @@ if(WPEFRAMEWORK_PROTOCOLS)
 endif()
 
 if(WPEFRAMEWORK_PROCESS)
-    set(WPEPROCESS_ARTIFACT WPEProcess)
     add_subdirectory(WPEProcess)
 endif()
 

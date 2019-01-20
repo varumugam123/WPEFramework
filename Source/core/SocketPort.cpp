@@ -291,7 +291,7 @@ uint32_t SocketPort::Open(const uint32_t waitTime, const string& specificInterfa
     } else {
         ASSERT ((m_Socket == INVALID_SOCKET) && (m_State == 0));
 
-        if ( (m_SocketType == SocketPort::RAW) || (m_SocketType == SocketPort::STREAM) ) {
+        if ( (m_SocketType == SocketPort::STREAM) || (m_SocketType == SocketPort::SEQUENCED) || (m_SocketType == SocketPort::RAW) ) {
             if (m_LocalNode.IsValid() == false) {
                 m_LocalNode = m_RemoteNode.Origin();
             }
@@ -302,7 +302,7 @@ uint32_t SocketPort::Open(const uint32_t waitTime, const string& specificInterfa
         m_Socket = ConstructSocket(m_LocalNode, specificInterface);
 
         if(m_Socket != INVALID_SOCKET) {
-            if( (m_SocketType == DATAGRAM) || ((m_SocketType == RAW) && (m_RemoteNode.IsValid() == false)) ) {
+            if( (m_SocketType == DATAGRAM) || (m_SocketType == SEQUENCED) || ((m_SocketType == RAW) && (m_RemoteNode.IsValid() == false)) ) {
                 m_State = SocketPort::OPEN|SocketPort::READ;
 
                 nStatus = Core::ERROR_NONE;
@@ -481,7 +481,7 @@ SOCKET SocketPort::ConstructSocket(NodeId& localNode, const string& specificInte
     }
 #endif
 
-    if ((l_Result = ::socket(localNode.Type(), SocketMode(), (localNode.Type() == NodeId::TYPE_NETLINK ? localNode.Extension() : 0))) == INVALID_SOCKET) {
+    if ((l_Result = ::socket(localNode.Type(), SocketMode(), localNode.Extension())) == INVALID_SOCKET) {
 	TRACE_L1("Error on creating socket SOCKET. Error %d", __ERRORRESULT__);
     } else if (SetNonBlocking (l_Result) == false) {
 #ifdef __WIN32__
@@ -547,8 +547,8 @@ SOCKET SocketPort::ConstructSocket(NodeId& localNode, const string& specificInte
             if (::bind(l_Result, static_cast<const NodeId&>(localNode), localNode.Size()) != SOCKET_ERROR) {
 
 #ifndef __WIN32__
-                if ((localNode.Type() == NodeId::TYPE_DOMAIN) && (localNode.Extension() <= 0777)) {
-                    if (::chmod(localNode.HostName().c_str(), localNode.Extension()) == 0) {
+                if ((localNode.Type() == NodeId::TYPE_DOMAIN) && (localNode.Rights() <= 0777)) {
+                    if (::chmod(localNode.HostName().c_str(), localNode.Rights()) == 0) {
                         BufferAlignment(l_Result);
                         return (l_Result);
                     } else {
@@ -672,15 +672,19 @@ uint16_t SocketPort::Events() {
             #endif
         }
 
-        #ifdef __LINUX__
-        result |= ((m_State & SocketPort::LINK) != 0 ? POLLHUP : 0)|((m_State & SocketPort::WRITE) != 0 ? POLLOUT : 0);
-        #endif
+
         if ((IsForcedClosing() == true) && (Closed() == true))  {
             result = 0;
             m_State &= ~SocketPort::MONITOR;
         }
-        else if ((IsOpen()) && ((m_State & SocketPort::WRITESLOT) != 0)) {
-            Write();
+        else {
+
+            if ((IsOpen()) && ((m_State & SocketPort::WRITESLOT) != 0)) {
+                Write();
+            }
+            #ifdef __LINUX__
+                result |= ((m_State & SocketPort::LINK) != 0 ? POLLHUP : 0)| ((m_State & SocketPort::WRITE) != 0 ? POLLOUT : 0);
+            #endif
         }
     }
 
@@ -689,14 +693,18 @@ uint16_t SocketPort::Events() {
 
 void SocketPort::Handle (const uint16_t flagsSet) {
 
+    bool breakIssued = ((m_State & SocketPort::WRITESLOT) != 0);
+
+    if ((flagsSet != 0) || (breakIssued == true)) {
+
     #ifdef __WIN32__
     if (IsListening()) {
-        if ((flagsSet & FD_ACCEPTED) != 0) {
+        if ((flagsSet & FD_ACCEPT) != 0) {
             // This triggeres an Addition of clients
             Accepted();
         }
     } else if (IsOpen()) {
-        if ((flagsSet & FD_WRITE) != 0) {
+        if ( ((flagsSet & FD_WRITE) != 0) || (breakIssued == true) )  {
             Write();
         }
         if ((flagsSet & FD_READ) != 0) {
@@ -708,7 +716,7 @@ void SocketPort::Handle (const uint16_t flagsSet) {
             m_State |= UPDATE;
         }
     }
-    else if ((flagSet & FD_CLOSE) != 0) {
+    else if ((flagsSet & FD_CLOSE) != 0) {
         Closed();
     }
 
@@ -719,7 +727,7 @@ void SocketPort::Handle (const uint16_t flagsSet) {
             Accepted();
         }
     } else if (IsOpen()) {
-        if ((flagsSet & POLLOUT) != 0) {
+        if ( ((flagsSet & POLLOUT) != 0) || (breakIssued == true) )  {
             Write();
         }
         if ((flagsSet & POLLIN) != 0) {
@@ -734,8 +742,8 @@ void SocketPort::Handle (const uint16_t flagsSet) {
         Closed();
     }
 #endif
+    }
 }
-
 
 void SocketPort::Write() {
     bool dataLeftToSend = true;
@@ -754,11 +762,11 @@ void SocketPort::Write() {
         }
 
         if (dataLeftToSend == true) {
-            uint32_t sendSize;
+            int32_t sendSize;
 
             // Sockets are non blocking the Send buffer size is equal to the buffer size. We only send
             // if the buffer free (SEND flag) is active, so the buffer should always fit.
-            if (((m_State & SocketPort::LINK) == 0) && (m_LocalNode.Type() != NodeId::TYPE_NETLINK)) {
+            if (((m_State & SocketPort::LINK) == 0) && (m_RemoteNode.IsValid() == true)) {
                 ASSERT (m_RemoteNode.IsValid() == true);
 
                 sendSize = ::sendto(m_Socket,
@@ -766,23 +774,24 @@ void SocketPort::Write() {
                                     m_SendBytes - m_SendOffset, 0,
                                     static_cast<const NodeId&>(m_RemoteNode),
                                     m_RemoteNode.Size());
+
             } else {
                 sendSize = ::send(m_Socket,
                                   reinterpret_cast <const char*>(&m_SendBuffer[m_SendOffset]),
                                   m_SendBytes - m_SendOffset, 0);
             }
 
-            if (sendSize != static_cast<uint32_t>(SOCKET_ERROR)) {
-                m_SendOffset += sendSize;
+            if (sendSize >= 0) {
+                m_SendOffset = ((m_State & SocketPort::LINK) != 0 ? m_SendOffset + sendSize : m_SendBytes);
             } else {
                 uint32_t l_Result = __ERRORRESULT__;
 
                 if ((l_Result == __ERROR_WOULDBLOCK__) || (l_Result == __ERROR_AGAIN__) || (l_Result == __ERROR_INPROGRESS__)) {
                     m_State |= SocketPort::WRITE;
                 } else {
+                    printf ("Write exception. %d\n", l_Result);
                     m_State |= SocketPort::EXCEPTION;
                     StateChange();
-                    printf ("Write exception. %d\n", l_Result);
                 }
             }
         }

@@ -45,12 +45,12 @@ target_link_libraries(Marshalling
         PRIVATE
           ${NAMESPACE}::Core
           ${NAMESPACE}::Tracing
-          ${NAMESPACE}::Cryptalgo
         )
 
 target_link_libraries(Interfaces
         PRIVATE
           ${NAMESPACE}::Core
+          ${NAMESPACE}::Tracing
         )
 
 if (WPEFRAMEWORK_PROTOCOLS)

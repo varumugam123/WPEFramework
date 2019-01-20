@@ -3,7 +3,9 @@ set(TARGET Core)
 option(WPEFRAMEWORK_DEADLOCK_DETECTION
         "Enable deadlock detection tooling." OFF)
 option(WPEFRAMEWORK_WCHAR_SUPPORT
-        "Enable support for WCHAR in ccpsdk." OFF)
+        "Enable support for WCHAR in the core." OFF)
+option(WPEFRAMEWORK_BLUETOOTH_SUPPORT
+        "Enable support for Bluetooth in the core." OFF)
 
 find_package(Threads REQUIRED)
 find_package(LIBRT)
@@ -50,14 +52,12 @@ set(PUBLIC_HEADERS
         DataBuffer.h
         DataElementFile.h
         DataElement.h
-        DataStorage.h
         Enumerate.h
         Factory.h
         FileSystem.h
         Frame.h
         IAction.h
         IIterator.h
-        ILogService.h
         IObserver.h
         IPCChannel.h
         IPCConnector.h
@@ -67,8 +67,6 @@ set(PUBLIC_HEADERS
         Library.h
         Link.h
         LockableContainer.h
-        Logger.h
-        LogService.h
         Measurement.h
         Media.h
         MessageException.h
@@ -82,7 +80,6 @@ set(PUBLIC_HEADERS
         Portability.h
         Process.h
         ProcessInfo.h
-        Processor.h
         Proxy.h
         Queue.h
         Range.h
@@ -123,10 +120,24 @@ add_library(Support INTERFACE)
 add_library(${NAMESPACE}::Support ALIAS Support)
 set(PC_FLAGS "-std=c++11")
 
+if(${CONFIG_DIR} STREQUAL "debug")
+    set(PC_FLAGS "${PC_FLAGS} -D_DEBUG -g0")
+elseif(${CONFIG_DIR} STREQUAL "production")
+    set(PC_FLAGS "${PC_FLAGS} -DNDEBUG -DPRODUCTION")
+else()
+    set(PC_FLAGS "${PC_FLAGS} -DNDEBUG")
+endif()
+
 if(NOT WPEFRAMEWORK_WCHAR_SUPPORT)
     set(PC_FLAGS "${PC_FLAGS} -D__NO_WCHAR_SUPPORT__")
     target_compile_definitions(Support INTERFACE __NO_WCHAR_SUPPORT__)
-    message(STATUS "Disabled WCHAR support")
+    message(STATUS "Disabled WCHAR support.")
+endif()
+
+if (WPEFRAMEWORK_BLUETOOTH_SUPPORT)
+    set(PC_FLAGS "${PC_FLAGS} -DCORE_BLUETOOTH")
+    target_compile_definitions(Support INTERFACE CORE_BLUETOOTH)
+    message(STATUS "Enable Bluetooth support.")
 endif()
 
 if(WPEFRAMEWORK_DEADLOCK_DETECTION)
