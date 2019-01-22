@@ -3,7 +3,9 @@ set(TARGET Core)
 option(WPEFRAMEWORK_DEADLOCK_DETECTION
         "Enable deadlock detection tooling." OFF)
 option(WPEFRAMEWORK_WCHAR_SUPPORT
-        "Enable support for WCHAR in ccpsdk." OFF)
+        "Enable support for WCHAR in the core." OFF)
+option(WPEFRAMEWORK_BLUETOOTH_SUPPORT
+        "Enable support for Bluetooth in the core." OFF)
 
 find_package(Threads REQUIRED)
 find_package(LIBRT)
@@ -37,6 +39,7 @@ add_library(${TARGET} SHARED
         Time.cpp
         Trace.cpp
         XGetopt.cpp
+        ResourceMonitor.cpp
         )
 
 #TODO: Remove all non public headers from this list,
@@ -49,14 +52,12 @@ set(PUBLIC_HEADERS
         DataBuffer.h
         DataElementFile.h
         DataElement.h
-        DataStorage.h
         Enumerate.h
         Factory.h
         FileSystem.h
         Frame.h
         IAction.h
         IIterator.h
-        ILogService.h
         IObserver.h
         IPCChannel.h
         IPCConnector.h
@@ -66,8 +67,6 @@ set(PUBLIC_HEADERS
         Library.h
         Link.h
         LockableContainer.h
-        Logger.h
-        LogService.h
         Measurement.h
         Media.h
         MessageException.h
@@ -81,13 +80,13 @@ set(PUBLIC_HEADERS
         Portability.h
         Process.h
         ProcessInfo.h
-        Processor.h
         Proxy.h
         Queue.h
         Range.h
         ReadWriteLock.h
         Rectangle.h
         RequestResponse.h
+        ResourceMonitor.h
         Serialization.h
         SerialPort.h
         Services.h
@@ -119,15 +118,30 @@ set(PUBLIC_HEADERS
 #non-buildable interfce target to carry the definitions
 add_library(Support INTERFACE)
 add_library(${NAMESPACE}::Support ALIAS Support)
+set(PC_FLAGS "-std=c++11")
 
-set(WCHAR_SUPPORT_DEFINITION)
-if(NOT WPEFRAMEWORK_WCHAR_SUPPORT)
-    target_compile_definitions(Support INTERFACE __NO_WCHAR_SUPPORT__)
-    message(STATUS "Disabled WCHAR support")
+if(${CONFIG_DIR} STREQUAL "debug")
+    set(PC_FLAGS "${PC_FLAGS} -D_DEBUG -g0")
+elseif(${CONFIG_DIR} STREQUAL "production")
+    set(PC_FLAGS "${PC_FLAGS} -DNDEBUG -DPRODUCTION")
+else()
+    set(PC_FLAGS "${PC_FLAGS} -DNDEBUG")
 endif()
 
-set(CRITICAL_SECTION_LOCK_DEFINITION)
+if(NOT WPEFRAMEWORK_WCHAR_SUPPORT)
+    set(PC_FLAGS "${PC_FLAGS} -D__NO_WCHAR_SUPPORT__")
+    target_compile_definitions(Support INTERFACE __NO_WCHAR_SUPPORT__)
+    message(STATUS "Disabled WCHAR support.")
+endif()
+
+if (WPEFRAMEWORK_BLUETOOTH_SUPPORT)
+    set(PC_FLAGS "${PC_FLAGS} -DCORE_BLUETOOTH")
+    target_compile_definitions(Support INTERFACE CORE_BLUETOOTH)
+    message(STATUS "Enable Bluetooth support.")
+endif()
+
 if(WPEFRAMEWORK_DEADLOCK_DETECTION)
+    set(PC_FLAGS "${PC_FLAGS} -DCRITICAL_SECTION_LOCK_LOG")
     target_compile_definitions(Support INTERFACE CRITICAL_SECTION_LOCK_LOG)
     message(STATUS "Enabled deadlock detection.")
 endif()
@@ -202,14 +216,35 @@ if (BCM_HOST_FOUND)
             )
 endif (BCM_HOST_FOUND)
 
+# ===========================================================================================
+# Install ARTIFACTS:
+# ===========================================================================================
 install(
         TARGETS Support ${TARGET}  EXPORT ${TARGET}Targets  # for downstream dependencies
         ARCHIVE DESTINATION lib COMPONENT libs      # static lib
         LIBRARY DESTINATION lib COMPONENT libs      # shared lib
         RUNTIME DESTINATION bin COMPONENT libs      # binaries
         FRAMEWORK DESTINATION bin COMPONENT libs    # for mac
-        PUBLIC_HEADER DESTINATION include/${NAMESPACE}/core COMPONENT devel   # headers for mac (note the different component -> different package)
+        PUBLIC_HEADER DESTINATION include/${NAMESPACE}/core COMPONENT devel   # for mac 
         INCLUDES DESTINATION include/${NAMESPACE}/core      # headers
+)
+
+# ===========================================================================================
+# Install METADATA:
+# ===========================================================================================
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/core.pc.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/${CORE_ARTIFACT}.pc"
+                @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CORE_ARTIFACT}.pc
+        DESTINATION "lib/pkgconfig")
+
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/core.cmake.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/Find${TARGET}.cmake"
+                @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Find${TARGET}.cmake
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/cmake/${NAMESPACE}"
 )
 
 HandleStandardLib()

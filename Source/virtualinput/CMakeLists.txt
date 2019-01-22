@@ -54,11 +54,20 @@ endif()
 
 
 configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/virtualkeyboard.pc.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/virtualkeyboard.pc"
+        "${CMAKE_CURRENT_SOURCE_DIR}/virtualinput.pc.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${NAMESPACE}VirtualInput.pc"
         @ONLY)
 
 install(
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/virtualkeyboard.pc
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/${NAMESPACE}VirtualInput.pc
         DESTINATION lib/pkgconfig
 )
+
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/virtualinput.cmake.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/Find${TARGET}.cmake"
+                @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Find${TARGET}.cmake
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/cmake/${NAMESPACE}"
+)
+

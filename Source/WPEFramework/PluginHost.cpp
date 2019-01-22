@@ -2,11 +2,11 @@
 
 #ifndef __WIN32__
 #include <syslog.h>
+#include <dlfcn.h>    // for dladdr
 #endif
 
 MODULE_NAME_DECLARATION(BUILD_REFERENCE)
 
-#define MAX_EXTERNAL_WAITS 2000 /* Wait for 2 Seconds */
 
 namespace WPEFramework {
 namespace PluginHost {
@@ -123,6 +123,7 @@ namespace PluginHost {
 
         if (_dispatcher != nullptr) {
             PluginHost::Server* destructor = _dispatcher;
+            destructor->Close();
             _dispatcher = nullptr;
             delete destructor;
 
@@ -148,7 +149,6 @@ namespace PluginHost {
 
     void LoadPlugins(const string& name, Server::Config& config)
     {
-
         Core::Directory pluginDirectory(name.c_str(), _T("*.json"));
 
         while (pluginDirectory.Next() == true) {
@@ -162,7 +162,7 @@ namespace PluginHost {
                     }
                 }
                 else if (file.Open(true) == false) {
-                    SYSLOG(PluginHost::Startup, (_T("Plugin config file [%s] could not be opened."), file.Name().c_str()));
+                    SYSLOG(Logging::Startup, (_T("Plugin config file [%s] could not be opened."), file.Name().c_str()));
                 }
                 else {
                     Plugin::Config pluginConfig;
@@ -170,7 +170,7 @@ namespace PluginHost {
                     file.Close();
 
                     if ((pluginConfig.ClassName.Value().empty() == true) || (pluginConfig.Locator.Value().empty() == true)) {
-                        SYSLOG(PluginHost::Startup, (_T("Plugin config file [%s] does not contain classname or locator."), file.Name().c_str()));
+                        SYSLOG(Logging::Startup, (_T("Plugin config file [%s] does not contain classname or locator."), file.Name().c_str()));
                     }
                     else {
                         if (pluginConfig.Callsign.Value().empty() == true) {
@@ -184,7 +184,7 @@ namespace PluginHost {
                             ;
 
                         if (index.IsValid() == true) {
-                            SYSLOG(PluginHost::Startup, (_T("Plugin config file [%s] can not be reconfigured."), file.Name().c_str()));
+                            SYSLOG(Logging::Startup, (_T("Plugin config file [%s] can not be reconfigured."), file.Name().c_str()));
                         }
                         else {
                             config.Plugins.Add(pluginConfig);
@@ -195,7 +195,7 @@ namespace PluginHost {
         }
     }
 
-	#ifndef __WIN32__
+    #ifndef __WIN32__
     void StartLoopbackInterface () {
         Core::AdapterIterator adapter;
         uint8_t retries = 8;
@@ -212,7 +212,7 @@ namespace PluginHost {
         } while ( (retries-- != 0) && (adapter.IsValid() == false) );
  	
 	if (adapter.IsValid() == false) {
-            SYSLOG(PluginHost::Startup, (_T("Interface [lo], not available")));
+            SYSLOG(Logging::Startup, (_T("Interface [lo], not available")));
         }
         else {
 
@@ -233,14 +233,41 @@ namespace PluginHost {
             } while ( (retries-- != 0) && (nodeId.IsValid() == false) );
 
 	    if (retries != 0) {
-                SYSLOG(PluginHost::Startup, (string(_T("Interface [lo], fully functional"))));
+                SYSLOG(Logging::Startup, (string(_T("Interface [lo], fully functional"))));
             }
             else {
-                SYSLOG(PluginHost::Startup, (string(_T("Interface [lo], partly functional (no name resolving)"))));
+                SYSLOG(Logging::Startup, (string(_T("Interface [lo], partly functional (no name resolving)"))));
 	    }
         }
     }
 	#endif
+
+    static void PublishCallstack(const ::ThreadId threadId) {
+		#ifndef __WIN32__
+        void* callstack[32];
+        uint32_t entries = ::GetCallStack(threadId, callstack, (sizeof(callstack) / sizeof (void*)));
+        char** symbols = backtrace_symbols(callstack, entries);
+
+        for (uint32_t i = 0; i < entries; i++) {
+            Dl_info info;
+            if (dladdr(callstack[i], &info) && info.dli_sname) {
+                char *demangled = NULL;
+                int status = -1;
+                if (info.dli_sname[0] == '_')
+                    demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
+                fprintf(stdout, "%-3d %*p %s + %zd\n", i, int(2 + sizeof(void*) * 2), callstack[i],
+                     status == 0 ? demangled :
+                     info.dli_sname == 0 ? symbols[i] : info.dli_sname,
+                     (char *)callstack[i] - (char *)info.dli_saddr);
+                free(demangled);
+            } else {
+                fprintf(stdout, "%-3d %*p %s\n",
+                     i, int(2 + sizeof(void*) * 2), callstack[i], symbols[i]);
+            }
+        }
+        free(symbols);
+		#endif
+    }
 
 #ifdef __WIN32__
     int _tmain(int argc, _TCHAR* argv[])
@@ -296,7 +323,7 @@ namespace PluginHost {
         else
 #endif
 
-        PluginHost::SysLog(!_background);
+        Logging::SysLog(!_background);
 
         // Read the config file, to instantiate the proper plugins and for us to open up the right listening ear.
         Core::File configFile(string(options.configFile), false);
@@ -348,14 +375,19 @@ namespace PluginHost {
             }
         }
 
+		#ifndef __WIN32__
+        ::umask(serviceConfig.Process.Umask.Value());
+		#endif
+
         // Time to open up, the trace buffer for this process and define it for the out-of-proccess systems
         // Define the environment variable for Tracing files, if it is not already set.
         const string tracePath(serviceConfig.VolatilePath.Value());
         Trace::TraceUnit::Instance().Open(tracePath);
 
         // Time to open up the LOG tracings by default.
-        Trace::TraceType<PluginHost::Startup, &PluginHost::MODULE_LOGGING>::Enable(true);
-        Trace::TraceType<PluginHost::Shutdown, &PluginHost::MODULE_LOGGING>::Enable(true);
+        Trace::TraceType<Logging::Startup, &Logging::MODULE_LOGGING>::Enable(true);
+        Trace::TraceType<Logging::Shutdown, &Logging::MODULE_LOGGING>::Enable(true);
+        Trace::TraceType<Logging::Notification, &Logging::MODULE_LOGGING>::Enable(true);
 
         Trace::TraceUnit::Instance().SetDefaultCategoriesJson(serviceConfig.DefaultTraceCategories);
 
@@ -364,12 +396,12 @@ namespace PluginHost {
 
         ISecurity* securityOptions = Core::Service<SecurityOptions>::Create<ISecurity>();
 
-        SYSLOG(PluginHost::Startup, (_T(EXPAND_AND_QUOTE(APPLICATION_NAME))));
-        SYSLOG(PluginHost::Startup, (_T("Starting time: %s"), Core::Time::Now().ToRFC1123(false).c_str()));
-        SYSLOG(PluginHost::Startup, (_T("SystemId:      %s"), Core::SystemInfo::Instance().Id(Core::SystemInfo::Instance().RawDeviceId(), ~0).c_str()));
-        SYSLOG(PluginHost::Startup, (_T("Tree ref:      " _T(EXPAND_AND_QUOTE(TREE_REFERENCE)))));
-        SYSLOG(PluginHost::Startup, (_T("Build ref:     " _T(EXPAND_AND_QUOTE(BUILD_REFERENCE)))));
-        SYSLOG(PluginHost::Startup, (_T("Version:       %s"), serviceConfig.Version.Value().c_str()));
+        SYSLOG(Logging::Startup, (_T(EXPAND_AND_QUOTE(APPLICATION_NAME))));
+        SYSLOG(Logging::Startup, (_T("Starting time: %s"), Core::Time::Now().ToRFC1123(false).c_str()));
+        SYSLOG(Logging::Startup, (_T("SystemId:      %s"), Core::SystemInfo::Instance().Id(Core::SystemInfo::Instance().RawDeviceId(), ~0).c_str()));
+        SYSLOG(Logging::Startup, (_T("Tree ref:      " _T(EXPAND_AND_QUOTE(TREE_REFERENCE)))));
+        SYSLOG(Logging::Startup, (_T("Build ref:     " _T(EXPAND_AND_QUOTE(BUILD_REFERENCE)))));
+        SYSLOG(Logging::Startup, (_T("Version:       %s"), serviceConfig.Version.Value().c_str()));
 
 		#ifndef __WIN32__
         // We need at least the loopback interface before we continue...
@@ -378,7 +410,7 @@ namespace PluginHost {
 
         // Before we do any translation of IP, make sure we have the right network info...
         if (serviceConfig.IPV6.Value() == false) {
-            SYSLOG(PluginHost::Startup, (_T("Forcing the network to IPv4 only.")));
+            SYSLOG(Logging::Startup, (_T("Forcing the network to IPv4 only.")));
             Core::NodeId::ClearIPV6Enabled();
         }
 
@@ -400,10 +432,13 @@ namespace PluginHost {
         // We don't need it anymore..
         securityOptions->Release();
 
-        SYSLOG(PluginHost::Startup, (_T(EXPAND_AND_QUOTE(APPLICATION_NAME) " actively listening.")));
+        SYSLOG(Logging::Startup, (_T(EXPAND_AND_QUOTE(APPLICATION_NAME) " actively listening.")));
+
+        // Assign a worker pool in this process!!
+        PluginHost::WorkerPool::Instance(_dispatcher->WorkerPool());
 
         // If we have handlers open up the gates to analyze...
-        _dispatcher->Dispatcher().Open(MAX_EXTERNAL_WAITS);
+        _dispatcher->Open();
 
 #ifndef __WIN32__
         if (_background == true) {
@@ -464,7 +499,7 @@ namespace PluginHost {
                     printf("\nServer statistics:\n");
                     printf("============================================================\n");
 #ifdef SOCKET_TEST_VECTORS
-                    printf("Monitorruns: %d\n", Core::SocketPort::MonitorRuns());
+                    printf("Monitorruns: %d\n", Core::ResourceMonitor::Instance().Runs());
 #endif
                     if (status != nullptr) {
                         uint8_t buffer[64] = {};
@@ -519,7 +554,7 @@ namespace PluginHost {
                                                                                         : "Unavailable");
 
                         printf("------------------------------------------------------------\n");
-                        if (status->IsActive(PluginHost::ISubSystem::NETWORK) == true) {
+                        if (status->IsActive(PluginHost::ISubSystem::INTERNET) == true) {
                             printf("Network Type: %s\n",
                                 (internet->NetworkType() == PluginHost::ISubSystem::IInternet::UNKNOWN ? "Unknown" :
                                    (internet->NetworkType() == PluginHost::ISubSystem::IInternet::IPV6 ? "IPv6"
@@ -571,24 +606,32 @@ namespace PluginHost {
                 }
 #if !defined(__WIN32__) && !defined(__APPLE__)
                 case 'M': {
-#ifdef __DEBUG__
                     printf("\nMonitor callstack:\n");
                     printf("============================================================\n");
-
-                    void* buffer[32];
-                    uint32_t length = Core::SocketPort::GetCallStack(buffer, sizeof(buffer));
-                    backtrace_symbols_fd(buffer, length, fileno(stderr));
-#else
-                    printf("Callstack for the monitor is only available in DEBUG mode.\n");
-#endif
+                    PublishCallstack(Core::ResourceMonitor::Instance().Id());
                     break;
                 }
-#endif
                 case 'Q':
                     break;
 
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+
+                    printf("\nThreadPool thread[%c] callstack:\n", keyPress);
+                    printf("============================================================\n");
+                    PublishCallstack(_dispatcher->WorkerPool().ThreadId((keyPress - '0')));
+                    break;
+#endif
+
                 case '?':
-                    printf("\nOptions are: [P]lugins, [C]hannels, [S]erver stats and [Q]uit\n\n");
+                    printf("\nOptions are: [P]lugins, [C]hannels, [S]erver stats, [M] Socket monitor stack, [0..8] Workerpool stack and [Q]uit\n\n");
                     break;
 
                 default:

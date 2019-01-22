@@ -4,6 +4,18 @@
 namespace WPEFramework {
 namespace PluginHost {
 
+        static WorkerPool* _singleton = nullptr;
+
+        /* static */ void WorkerPool::Instance(WorkerPool& instance) {
+            ASSERT (_singleton == nullptr);
+            _singleton = &instance;
+        }
+
+        /* static */ WorkerPool& WorkerPool::Instance() {
+            ASSERT (_singleton != nullptr);
+            return (*_singleton);
+        }
+
 	PluginHost::Request::Request()
 		: Web::Request()
 		, _state(INCOMPLETE)
@@ -43,24 +55,6 @@ namespace PluginHost {
     /* static */ Core::ProxyType<Core::IDispatchType<void> > IShell::Job::Create(IShell* shell, IShell::state toState, IShell::reason why)
     {
         return (Core::proxy_cast<Core::IDispatchType<void>> (Core::ProxyType<IShell::Job>::Create(shell, toState, why)));
-    }
-
-    WorkerPool::WorkerPool(const uint32_t stackSize)
-        : _workers(stackSize, _T("WorkerPool"))
-        , _timer(stackSize, _T("WorkerTimer"))
-    {
-        TRACE_L1("WorkerPool created with stacksize %d", stackSize);
-    }
-
-    WorkerPool::~WorkerPool()
-    {
-    }
-
-    /* static */ WorkerPool& WorkerPool::Instance(const uint32_t stackSize)
-    {
-        static WorkerPool& instance (Core::SingletonType<WorkerPool>::Instance(stackSize));
-
-        return (instance);
     }
 
     Factories::Factories()

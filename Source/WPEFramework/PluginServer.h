@@ -4,6 +4,12 @@
 #include "Module.h"
 #include "SystemInfo.h"
 
+#ifndef HOSTING_COMPROCESS
+#error "Please define the name of the COM process!!!"
+#endif
+
+#define MAX_EXTERNAL_WAITS 2000 /* Wait for 2 Seconds */
+
 namespace WPEFramework {
 
     namespace Core {
@@ -50,6 +56,7 @@ namespace WPEFramework {
                     , OOMAdjust(0)
                     , Policy()
                     , StackSize(0)
+                    , Umask(0003)
                 {
                     Add(_T("user"), &User);
                     Add(_T("group"), &Group);
@@ -57,6 +64,7 @@ namespace WPEFramework {
                     Add(_T("policy"), &Policy);
                     Add(_T("oomadjust"), &OOMAdjust);
                     Add(_T("stacksize"), &StackSize);
+                    Add(_T("umask"), &Umask);
                 }
                 ProcessSet(const ProcessSet& copy)
                     : Core::JSON::Container()
@@ -66,6 +74,7 @@ namespace WPEFramework {
                     , OOMAdjust(copy.OOMAdjust)
                     , Policy(copy.Policy)
                     , StackSize(copy.StackSize)
+                    , Umask(copy.Umask)
                 {
                     Add(_T("user"), &User);
                     Add(_T("group"), &Group);
@@ -73,6 +82,7 @@ namespace WPEFramework {
                     Add(_T("policy"), &Policy);
                     Add(_T("oomadjust"), &OOMAdjust);
                     Add(_T("stacksize"), &StackSize);
+                    Add(_T("umask"), &Umask);
                 }
                 ~ProcessSet()
                 {
@@ -86,6 +96,7 @@ namespace WPEFramework {
                     Policy = RHS.Policy;
                     OOMAdjust = RHS.OOMAdjust;
                     StackSize = RHS.StackSize;
+                    Umask = RHS.Umask;
 
                     return (*this);
                 }
@@ -96,6 +107,7 @@ namespace WPEFramework {
                 Core::JSON::DecSInt8 OOMAdjust;
                 Core::JSON::EnumType<Core::ProcessInfo::scheduler> Policy;
                 Core::JSON::DecUInt32 StackSize;
+                Core::JSON::DecUInt16 Umask;
             };
 
             class InputConfig : public Core::JSON::Container {
@@ -105,7 +117,7 @@ namespace WPEFramework {
                     : Locator("127.0.0.1:9631")
                     , Type(PluginHost::InputHandler::VIRTUAL)
 #else
-					: Locator("/tmp/keyhandler")
+					: Locator("/tmp/keyhandler|0760")
 					, Type(PluginHost::InputHandler::VIRTUAL)
 #endif
                 {
@@ -215,6 +227,124 @@ namespace WPEFramework {
             Core::JSON::String Configs;
             Core::JSON::ArrayType<Plugin::Config> Plugins;
         };
+
+    class EXTERNAL WorkerPoolImplementation : public PluginHost::WorkerPool {
+    private:
+        class TimedJob
+        {
+        public:
+            TimedJob ()
+                : _job()
+            {
+            }
+            TimedJob (const Core::ProxyType<Core::IDispatchType<void> >& job)
+                : _job(job)
+            {
+            }
+            TimedJob (const TimedJob& copy)
+                : _job(copy._job)
+            {
+            }
+            ~TimedJob ()
+            {
+            }
+
+            TimedJob& operator= (const TimedJob& RHS)
+            {
+                _job = RHS._job;
+                return (*this);
+            }
+            bool operator== (const TimedJob& RHS) const
+            {
+                return (_job == RHS._job);
+            }
+            bool operator!= (const TimedJob& RHS) const
+            {
+                return (_job != RHS._job);
+            }
+
+        public:
+            uint64_t Timed (const uint64_t /* scheduledTime */)
+            {
+                WorkerPoolImplementation::Instance().Submit(_job);
+                _job.Release();
+
+                // No need to reschedule, just drop it..
+                return (0);
+            }
+
+        private:
+            Core::ProxyType<Core::IDispatchType<void> > _job;
+        };
+
+        typedef Core::ThreadPoolType<Core::Job, WPEFRAMEWORK_THREADPOOL_COUNT> ThreadPool;
+
+    private:
+        WorkerPoolImplementation() = delete;
+        WorkerPoolImplementation(const WorkerPoolImplementation&) = delete;
+        WorkerPoolImplementation& operator=(const WorkerPoolImplementation&) = delete;
+
+    public:
+        WorkerPoolImplementation(const uint32_t stackSize)
+            : _workers(stackSize, _T("WorkerPoolImplementation"))
+            , _timer(stackSize, _T("WorkerTimer")) {
+        }
+        ~WorkerPoolImplementation() {
+        }
+
+    public:
+        // A-synchronous calls. If the method returns, the workers are accepting and handling work.
+        inline void Run()
+        {
+            _workers.Run();
+        }
+        // A-synchronous calls. If the method returns, the workers are all blocked, no new work will
+        // be accepted. Work in progress will be completed. Use the WaitState to wait for the actual block.
+        inline void Block()
+        {
+            _workers.Block();
+        }
+        inline void Wait(const uint32_t waitState, const uint32_t time)
+        {
+            _workers.Wait(waitState, time);
+        }
+        virtual void Submit(const Core::ProxyType<Core::IDispatch>& job) override
+        {
+            _workers.Submit(Core::Job(job), Core::infinite);
+        }
+        virtual void Schedule(const Core::Time& time, const Core::ProxyType<Core::IDispatch >& job) override
+        {
+            _timer.Schedule(time, TimedJob(job));
+        }
+        virtual uint32_t Revoke(const Core::ProxyType<Core::IDispatch >& job, const uint32_t waitTime = Core::infinite) override
+        {
+           // First check the timer if it can be removed from there.
+            _timer.Revoke(TimedJob(job));
+
+            // Also make sure it is taken of the WorkerPoolImplementation, if applicable.
+            return (_workers.Revoke(Core::Job(job), waitTime));
+        }
+        virtual void GetMetaData(MetaData::Server& metaData) const override
+        {
+            metaData.PendingRequests = _workers.Pending();
+            metaData.PoolOccupation = _workers.Active();
+
+            for (uint8_t teller = 0; teller < _workers.Count(); teller++) {
+                // Example of why copy-constructor and assignment constructor should be equal...
+                Core::JSON::DecUInt32 newElement;
+                newElement = _workers[teller].Runs();
+                metaData.ThreadPoolRuns.Add(newElement);
+            }
+        }
+        inline ::ThreadId ThreadId(const uint8_t index) const {
+            return (index == 0 ? _timer.ThreadId() : _workers.ThreadId(index-1));
+        }
+
+    private:
+        ThreadPool _workers;
+        Core::TimerType<TimedJob> _timer;
+    };
+
 
     private:
         class ServiceMap;
@@ -386,7 +516,6 @@ namespace WPEFramework {
             std::string _text;
         };
  
-
         class EXTERNAL Service : public PluginHost::Service {
         private:
             Service() = delete;
@@ -815,6 +944,42 @@ namespace WPEFramework {
             }
 
         private:
+            inline PluginHost::IPlugin* CheckLibrary(const string& name, const TCHAR* className, const uint32_t version) {
+                PluginHost::IPlugin* newIF = nullptr;
+                Core::File libraryToLoad(name, true);
+
+                if (libraryToLoad.Exists() != true) {
+                    if (HasError() == false) {
+                        ErrorMessage(_T("library does not exist"));
+                    }
+                }
+                else {
+                    Core::ServiceAdministrator& admin(Core::ServiceAdministrator::Instance());
+                    Core::Library myLib(name.c_str());
+
+                    if (myLib.IsLoaded() == false) {
+                        if ( (HasError() == false) || (ErrorMessage().substr(0, 7) == _T("library")) ) {
+                            ErrorMessage(myLib.Error());
+                        }
+                    }
+                    else if ((newIF = admin.Instantiate<PluginHost::IPlugin>(myLib, className, version)) == nullptr) {
+                        ErrorMessage(_T("class definitions does not exist"));
+                    }
+                    else {
+                        Core::System::ModuleNameImpl moduleName = reinterpret_cast<Core::System::ModuleNameImpl>(myLib.LoadFunction(_T("ModuleName")));
+                        Core::System::ModuleBuildRefImpl moduleBuildRef = reinterpret_cast<Core::System::ModuleBuildRefImpl>(myLib.LoadFunction(_T("ModuleBuildRef")));
+
+                        if (moduleName != nullptr) {
+                            _moduleName = moduleName();
+                        }
+                        if (moduleBuildRef != nullptr) {
+                            _versionHash = moduleBuildRef();
+                        }
+                    }
+                }
+                return (newIF);
+            }
+
             void AquireInterfaces()
             {
                 ASSERT(State() == DEACTIVATED);
@@ -824,53 +989,23 @@ namespace WPEFramework {
                 const string classNameString(PluginHost::Service::Configuration().ClassName.Value());
                 const TCHAR* className(classNameString.c_str());
                 uint32_t version(PluginHost::Service::Configuration().Version.IsSet() ? PluginHost::Service::Configuration().Version.Value() : static_cast<uint32_t>(~0));
-                Core::ServiceAdministrator& admin(Core::ServiceAdministrator::Instance());
-                Core::Library myLib;
-
-                if (locator.empty() == true) {
-                    newIF = admin.Instantiate<PluginHost::IPlugin>(myLib, className, version);
-                }
-                else {
-                    myLib = Core::Library((Information().PersistentPath() + locator).c_str());
-
-                    if ((!myLib.IsLoaded()) || ((newIF = admin.Instantiate<PluginHost::IPlugin>(myLib, className, version)) == nullptr)) {
-                        myLib = Core::Library((Information().SystemPath() + locator).c_str());
-
-                        if ((!myLib.IsLoaded()) || ((newIF = admin.Instantiate<PluginHost::IPlugin>(myLib, className, version)) == nullptr)) {
-                            myLib = Core::Library((Information().DataPath() + locator).c_str());
-
-                            if ((!myLib.IsLoaded()) || ((newIF = admin.Instantiate<PluginHost::IPlugin>(myLib, className, version)) == nullptr)) {
-                                myLib = Core::Library((Information().AppPath() + "Plugins/" + locator).c_str());
-
-                                if ((!myLib.IsLoaded()) || ((newIF = admin.Instantiate<PluginHost::IPlugin>(myLib, className, version)) == nullptr)) {
-                                    ErrorMessage(_T("Location [") + locator + _T("] does not contain a loadable plugin."));
-                                }
-                            }
-                        }
-                    }
-                }
 
                 _moduleName.clear();
                 _versionHash.clear();
 
-                if (myLib.IsLoaded()) {
-                    Core::System::ModuleNameImpl moduleName = reinterpret_cast<Core::System::ModuleNameImpl>(myLib.LoadFunction(_T("ModuleName")));
-                    Core::System::ModuleBuildRefImpl moduleBuildRef = reinterpret_cast<Core::System::ModuleBuildRefImpl>(myLib.LoadFunction(_T("ModuleBuildRef")));
-
-                    if (moduleName != nullptr) {
-                        _moduleName = moduleName();
-                    }
-                    if (moduleBuildRef != nullptr) {
-                        _versionHash = moduleBuildRef();
-                    }
-                }
-
-                if (newIF == nullptr) {
-                    if (HasError() == false) {
-                        ErrorMessage(_T("plugin [") + string(className) + _T("] with callsign [") + PluginHost::Service::Configuration().Callsign.Value() + _T("] could not be instantiated."));
-                    }
+                if (locator.empty() == true) {
+                    Core::ServiceAdministrator& admin(Core::ServiceAdministrator::Instance());
+                    newIF = admin.Instantiate<PluginHost::IPlugin>(Core::Library(), className, version);
                 }
                 else {
+                    if ((newIF = CheckLibrary((Information().PersistentPath() + locator), className, version)) == nullptr) {
+                        if ((newIF = CheckLibrary((Information().SystemPath() + locator), className, version)) == nullptr) {
+                            newIF = CheckLibrary((Information().AppPath() + _T("Plugins/") + locator), className, version);
+                        }
+                    }
+                }
+
+                if (newIF != nullptr) {
                     _extended = newIF->QueryInterface<PluginHost::IPluginExtended>();
                     _webRequest = newIF->QueryInterface<PluginHost::IWeb>();
                     _webSocket = newIF->QueryInterface<PluginHost::IWebSocket>();
@@ -966,16 +1101,16 @@ namespace WPEFramework {
 
 			public:
 				CommunicatorServer(const Core::NodeId& node, const string& persistentPath, const string& systemPath, const string& dataPath, const string& appPath, const string& proxyStubPath, const uint32_t stackSize)
-					: RPC::Communicator(node, Core::ProxyType<RPC::InvokeServerType<64, 3> >::Create(stackSize), proxyStubPath.empty() == false ? Core::Directory::Normalize(proxyStubPath) : proxyStubPath)
+					: RPC::Communicator(node, Core::ProxyType<RPC::InvokeServerType<16,WPEFRAMEWORK_RPCPOOL_COUNT> >::Create(stackSize), proxyStubPath.empty() == false ? Core::Directory::Normalize(proxyStubPath) : proxyStubPath)
 					, _persistentPath(persistentPath.empty() == false ? Core::Directory::Normalize(persistentPath) : persistentPath)
 					, _systemPath(systemPath.empty() == false ? Core::Directory::Normalize(systemPath) : systemPath)
 					, _dataPath(dataPath.empty() == false ? Core::Directory::Normalize(dataPath) : dataPath)
 					, _appPath(appPath.empty() == false ? Core::Directory::Normalize(appPath) : appPath)
 					, _proxyStubPath(proxyStubPath.empty() == false ? Core::Directory::Normalize(proxyStubPath) : proxyStubPath)
 #ifdef __WIN32__
-					, _application(_systemPath + EXPAND_AND_QUOTE(ARTIFACT_COMPROCESS))
+					, _application(_systemPath + EXPAND_AND_QUOTE(HOSTING_COMPROCESS))
 #else
-					, _application(EXPAND_AND_QUOTE(ARTIFACT_COMPROCESS))
+					, _application(EXPAND_AND_QUOTE(HOSTING_COMPROCESS))
 #endif
                     , _offeredInterfaces()
                     , _adminLock()
@@ -1274,7 +1409,7 @@ namespace WPEFramework {
                     void Schedule() {
                         if (_schedule == false) {
                             _schedule = true;
-                            PluginHost::WorkerPool::Instance().Submit(Core::ProxyType< Core::IDispatchType<void> >(*this));
+                            _parent.WorkerPool().Submit(Core::ProxyType< Core::IDispatchType<void> >(*this));
                         }
                     }
                     virtual void Dispatch()
@@ -1295,7 +1430,7 @@ namespace WPEFramework {
                     , _decoupling(Core::ProxyType<Job>::Create(this)) {
                 }
                 virtual ~SubSystems() {
-		    PluginHost::WorkerPool::Instance().Revoke(_decoupling);
+		    _parent.WorkerPool().Revoke(_decoupling);
                 }
 
             private:
@@ -1305,6 +1440,9 @@ namespace WPEFramework {
                 }
                 inline void Evaluate() {
                     _parent.Evaluate();
+                }
+                inline PluginHost::WorkerPool& WorkerPool () {
+                    return(_parent.WorkerPool());
                 }
 
             private:
@@ -1566,6 +1704,9 @@ namespace WPEFramework {
                std::map<const string, Core::ProxyType<Service> >::iterator index(_services.begin());
 
                RecursiveNotification(index);
+           }
+           inline PluginHost::WorkerPool& WorkerPool() {
+               return (_server.WorkerPool());
            }
 
         private:
@@ -2209,6 +2350,10 @@ namespace WPEFramework {
         {
             return (_services);
         }
+        inline Server::WorkerPoolImplementation& WorkerPool()
+        {
+            return (_dispatcher);
+        }
         inline void Submit(const Core::ProxyType<Core::IDispatchType<void> >& job)
         {
             _dispatcher.Submit(job);
@@ -2236,14 +2381,15 @@ namespace WPEFramework {
         void Notify(const string& message) {
             _controller->Notification(message);
         }
-
+        void Open();
+        void Close();
 
     private:
         Core::NodeId _accessor;
 
         // Here we start dispatching to different threads for different requests if required and if we have a service
         // that can handle the request.
-        WorkerPool& _dispatcher;
+        WorkerPoolImplementation _dispatcher;
 
         // Create the server. This is a socket listening for incoming connections. Any connection comming in, will be
         // linked to this server and will forward the received requests to this server. This server will than handl it using a thread pool.

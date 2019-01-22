@@ -1,5 +1,4 @@
 #include "IAVNClient.h"
-#include "IBluetooth.h"
 #include "IBrowser.h"
 #include "IComposition.h"
 #include "IDictionary.h"
@@ -17,7 +16,6 @@
 #include "IWebDriver.h"
 #include "IWebServer.h"
 
-#define TR() printf("%s:%d\n", __FUNCTION__, __LINE__);
 MODULE_NAME_DECLARATION(BUILDREF_WEBBRIDGE)
 
 namespace WPEFramework {
@@ -320,82 +318,6 @@ namespace ProxyStubs {
     // IWebDriver interface stub definitions
 
     //
-    // IBluetooth interface stub definitions (interface/IBluetooth.h)
-    //
-     ProxyStub::MethodHandler BluetoothStubMethods[] = {
-        [](Core::ProxyType<Core::IPCChannel>& channel, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // virtual uint32_t Configure(PluginHost::IShell* service) = 0;
-            RPC::Data::Input& parameters(message->Parameters());
-            RPC::Data::Frame::Reader reader(parameters.Reader());
-            RPC::Data::Frame::Writer writer(message->Response().Writer());
-
-            PluginHost::IShell* implementation = reader.Number<PluginHost::IShell*>();
-            PluginHost::IShell* proxy = RPC::Administrator::Instance().CreateProxy<PluginHost::IShell>(channel, implementation, true, false);
-
-            ASSERT((proxy != nullptr) && "Failed to create proxy");
-
-            if (proxy == nullptr) {
-                TRACE_L1(_T("Could not create a stub for Bluetooth: %p"), implementation);
-                writer.Number<uint32_t>(Core::ERROR_RPC_CALL_FAILED);
-            } else {
-                writer.Number(parameters.Implementation<IBluetooth>()->Configure(proxy));
-                if (proxy->Release() != Core::ERROR_NONE) {
-                    TRACE_L1("Oops seems like we did not maintain a reference to this sink. %d", __LINE__);
-                }
-            }
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // Scan()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Boolean(message->Parameters().Implementation<IBluetooth>()->Scan());
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // StopScan()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Boolean(message->Parameters().Implementation<IBluetooth>()->StopScan());
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // DiscoveredDevices()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Text(message->Parameters().Implementation<IBluetooth>()->DiscoveredDevices());
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // PairedDevices()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Text(message->Parameters().Implementation<IBluetooth>()->PairedDevices());
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // Pair()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            response.Boolean(message->Parameters().Implementation<IBluetooth>()->Pair(parameters.Text()));
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // Connect()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            response.Boolean(message->Parameters().Implementation<IBluetooth>()->Connect(parameters.Text()));
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // Disconnect()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Boolean(message->Parameters().Implementation<IBluetooth>()->Disconnect());
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // IsScanning()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Boolean(message->Parameters().Implementation<IBluetooth>()->IsScanning());
-        },
-        [](Core::ProxyType<Core::IPCChannel>&, Core::ProxyType<RPC::InvokeMessage>& message) {
-            // Connected()
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-            response.Text(message->Parameters().Implementation<IBluetooth>()->Connected());
-        },
-        nullptr
-    };
-    // IBluetooth interface stub definitions
-
-    //
     // IOCDM interface stub definitions (interface/IOCDM.h)
     //
     ProxyStub::MethodHandler OpenCDMiStubMethods[] = {
@@ -514,6 +436,12 @@ namespace ProxyStubs {
         },
         [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             //
+            // virtual void FactoryReset() = 0;
+            //
+            message->Parameters().Implementation<INetflix>()->FactoryReset();
+        },
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
+            //
             // virtual void SystemCommand(const string& command) = 0;
             //
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
@@ -527,6 +455,13 @@ namespace ProxyStubs {
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
             string element(parameters.Text());
             message->Parameters().Implementation<INetflix>()->Language(element);
+        },
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
+            //
+            // virtual void SetVisible(bool visibility) = 0;
+            //
+            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
+            message->Parameters().Implementation<INetflix>()->SetVisible(parameters.Boolean());
         },
         nullptr
     };
@@ -938,7 +873,7 @@ namespace ProxyStubs {
     // IRtspClient interface stub definitions (interface/IRtspClient.h)
     //
     ProxyStub::MethodHandler RtspClientStubMethods[] = {
-        [](Core::ProxyType<Core::IPCChannel>& channel, Core::ProxyType<RPC::InvokeMessage>& message) { TR();
+        [](Core::ProxyType<Core::IPCChannel>& channel, Core::ProxyType<RPC::InvokeMessage>& message) {
             // virtual uint32_t Configure(PluginHost::IShell* framework) = 0;
             RPC::Data::Input& parameters(message->Parameters());
             RPC::Data::Frame::Reader reader(parameters.Reader());
@@ -960,7 +895,7 @@ namespace ProxyStubs {
                 }
             }
         },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) { TR();
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             // virtual uint32_t Setup(const string& assetId, uint32_t position)
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
             string assetId(parameters.Text());
@@ -968,7 +903,7 @@ namespace ProxyStubs {
 
             message->Parameters().Implementation<IRtspClient>()->Setup(assetId, position);
         },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) { TR();
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             // virtual uint32_t Play(int32_t scale, uint32_t position)
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
             int32_t  scale    = parameters.Number<int32_t>();
@@ -976,11 +911,11 @@ namespace ProxyStubs {
 
             message->Parameters().Implementation<IRtspClient>()->Play(scale, position);
         },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) { TR();
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             // virtual uint32_t Teardown()
             message->Parameters().Implementation<IRtspClient>()->Teardown();
         },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) { TR();
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             // virtual void Set(const string& name, const string& value) = 0;
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
             string name(parameters.Text());
@@ -988,7 +923,7 @@ namespace ProxyStubs {
 
             message->Parameters().Implementation<IRtspClient>()->Set(name, value);
         },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) { TR();
+        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             // virtual string Get(const string& name) const = 0;
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
             string name(parameters.Text());
@@ -1639,7 +1574,6 @@ namespace ProxyStubs {
     typedef ProxyStub::StubType<IGuide::INotification, GuideNotificationStubMethods, ProxyStub::UnknownStub> GuideNotificationStub;
     typedef ProxyStub::StubType<IWebDriver, WebDriverStubMethods, ProxyStub::UnknownStub> WebDriverStub;
     typedef ProxyStub::StubType<IContentDecryption, OpenCDMiStubMethods, ProxyStub::UnknownStub> OpenCDMiStub;
-    typedef ProxyStub::StubType<IBluetooth, BluetoothStubMethods, ProxyStub::UnknownStub> BluetoothStub;
     typedef ProxyStub::StubType<INetflix, NetflixStubMethods, ProxyStub::UnknownStub> NetflixStub;
     typedef ProxyStub::StubType<INetflix::INotification, NetflixNotificationStubMethods, ProxyStub::UnknownStub> NetflixNotificationStub;
     typedef ProxyStub::StubType<IProvisioning, ProvisioningStubMethods, ProxyStub::UnknownStub> ProvisioningStub;
@@ -1984,113 +1918,6 @@ namespace ProxyStubs {
         }
     };
 
-    class BluetoothProxy : public ProxyStub::UnknownProxyType<IBluetooth> {
-    public:
-        BluetoothProxy(Core::ProxyType<Core::IPCChannel>& channel, void* implementation, const bool otherSideInformed)
-            : BaseClass(channel, implementation, otherSideInformed)
-        {
-        }
-
-        virtual ~BluetoothProxy()
-        {
-        }
-    public:
-        virtual uint32_t Configure(PluginHost::IShell* service)
-        {
-            IPCMessage newMessage(BaseClass::Message(0));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-            writer.Number<PluginHost::IShell*>(service);
-            Invoke(newMessage);
-            return (newMessage->Response().Reader().Number<uint32_t>());
-        }
-
-        virtual bool Scan()
-        {
-            IPCMessage newMessage(BaseClass::Message(1));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Boolean();
-        }
-
-        virtual bool StopScan()
-        {
-            IPCMessage newMessage(BaseClass::Message(2));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Boolean();
-        }
-
-        virtual string DiscoveredDevices()
-        {
-            IPCMessage newMessage(BaseClass::Message(3));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Text();
-        }
-
-        virtual string PairedDevices()
-        {
-            IPCMessage newMessage(BaseClass::Message(4));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Text();
-        }
-
-        virtual bool Pair(string deviceId)
-        {
-            IPCMessage newMessage(BaseClass::Message(5));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-            writer.Text(deviceId);
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Boolean();
-        }
-
-        virtual bool Connect(string deviceId)
-        {
-            IPCMessage newMessage(BaseClass::Message(6));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-            writer.Text(deviceId);
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Boolean();
-        }
-
-        virtual bool Disconnect()
-        {
-            IPCMessage newMessage(BaseClass::Message(7));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Boolean();
-        }
-
-        virtual bool IsScanning()
-        {
-            IPCMessage newMessage(BaseClass::Message(8));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Boolean();
-        }
-
-        virtual string Connected()
-        {
-            IPCMessage newMessage(BaseClass::Message(9));
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Text();
-        }
-    };
-
-
     class NetflixProxy : public ProxyStub::UnknownProxyType<INetflix> {
     public:
         NetflixProxy(Core::ProxyType<Core::IPCChannel>& channel, void* implementation, const bool otherSideInformed)
@@ -2107,6 +1934,7 @@ namespace ProxyStubs {
         // virtual void Register(INetflix::INotification* netflix) = 0;
         // virtual void Unregister(INetflix::INotification* netflix) = 0;
         // virtual string GetESN() const = 0;
+        // virtual void FactoryReset() = 0;
         // virtual void SystemCommand(const string& command) = 0;
         // virtual void Language(const string& language) = 0;
         virtual void Register(INetflix::INotification* notification)
@@ -2133,9 +1961,15 @@ namespace ProxyStubs {
             return reader.Text();
         }
 
-        virtual void SystemCommand(const string& command)
+        virtual void FactoryReset()
         {
             IPCMessage newMessage(BaseClass::Message(3));
+            Invoke(newMessage);
+        }
+
+        virtual void SystemCommand(const string& command)
+        {
+            IPCMessage newMessage(BaseClass::Message(4));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
             writer.Text(command);
             Invoke(newMessage);
@@ -2143,9 +1977,17 @@ namespace ProxyStubs {
 
         virtual void Language(const string& language)
         {
-            IPCMessage newMessage(BaseClass::Message(4));
+            IPCMessage newMessage(BaseClass::Message(5));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
             writer.Text(language);
+            Invoke(newMessage);
+        }
+
+        virtual void SetVisible(bool visibility)
+        {
+            IPCMessage newMessage(BaseClass::Message(6));
+            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
+            writer.Boolean(visibility);
             Invoke(newMessage);
         }
     };
@@ -2500,16 +2342,16 @@ namespace ProxyStubs {
     public:
         RtspClientProxy(Core::ProxyType<Core::IPCChannel>& channel, void* implementation, const bool otherSideInformed)
             : BaseClass(channel, implementation, otherSideInformed)
-        { TR();
+        {
         }
 
         virtual ~RtspClientProxy()
-        { TR();
+        {
         }
 
     public:
         virtual uint32_t Configure(PluginHost::IShell* service)
-        { TR();
+        {
             IPCMessage newMessage(BaseClass::Message(0));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
             writer.Number<PluginHost::IShell*>(service);
@@ -2518,7 +2360,7 @@ namespace ProxyStubs {
         }
 
         virtual uint32_t Setup(const string& assetId, uint32_t position)
-        { TR();
+        {
             IPCMessage newMessage(BaseClass::Message(1));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
             writer.Text(assetId);
@@ -2528,7 +2370,7 @@ namespace ProxyStubs {
         }
 
         virtual uint32_t Play(int32_t scale, uint32_t position)
-        { TR();
+        {
             IPCMessage newMessage(BaseClass::Message(2));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
             writer.Number(scale);
@@ -2538,7 +2380,7 @@ namespace ProxyStubs {
         }
 
         virtual uint32_t Teardown()
-        { TR();
+        {
             IPCMessage newMessage(BaseClass::Message(3));
             Invoke(newMessage);
             return (newMessage->Response().Reader().Number<uint32_t>());
@@ -2546,7 +2388,7 @@ namespace ProxyStubs {
 
 
         virtual void Set(const string& name, const string& value)
-        { TR();
+        {
             IPCMessage newMessage(BaseClass::Message(4));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
             writer.Text(name);
@@ -2555,7 +2397,7 @@ namespace ProxyStubs {
         }
 
         virtual string Get(const string& name) const
-        { TR();
+        {
             IPCMessage newMessage(BaseClass::Message(5));
             Invoke(newMessage);
 
@@ -3223,7 +3065,6 @@ namespace ProxyStubs {
             RPC::Administrator::Instance().Announce<IGuide::INotification, GuideNotificationProxy, GuideNotificationStub>();
             RPC::Administrator::Instance().Announce<IWebDriver, WebDriverProxy, WebDriverStub>();
             RPC::Administrator::Instance().Announce<IContentDecryption, OpenCDMiProxy, OpenCDMiStub>();
-            RPC::Administrator::Instance().Announce<IBluetooth, BluetoothProxy, BluetoothStub>();
             RPC::Administrator::Instance().Announce<INetflix, NetflixProxy, NetflixStub>();
             RPC::Administrator::Instance().Announce<INetflix::INotification, NetflixNotificationProxy, NetflixNotificationStub>();
             RPC::Administrator::Instance().Announce<IProvisioning, ProvisioningProxy, ProvisioningStub>();

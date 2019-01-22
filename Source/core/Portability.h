@@ -73,7 +73,6 @@
 #define  __SIZEOF_POINTER__ 8
 #endif
 
-#define NOMINMAX
 #define _WINSOCKAPI_ /* Prevent inclusion of winsock.h in windows.h */
 #define WIN32_LEAN_AND_MEAN
 #define NOWINRES
@@ -88,6 +87,7 @@
 #include <memory.h>
 #include <assert.h>
 #include <algorithm>
+#include <WinSock2.h>
 
 #define AF_NETLINK    16
 
@@ -166,6 +166,8 @@ typedef std::string string;
 // This is an HTTP keyword (VERB) Let's undefine it from windows headers..
 #define _CRT_SECURE_NO_WARNINGS 1
 #undef DELETE
+#undef min
+#undef max
 
 //#if _MSC_VER >= 1600
 //const std::basic_string<char>::size_type std::basic_string<char>::npos = (std::basic_string<char>::size_type) - 1;
@@ -211,6 +213,9 @@ typedef std::string string;
 #include <sched.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <cxxabi.h>
+#include <poll.h>
+
 
 #ifdef __APPLE__
 #include <pthread_impl.h>
@@ -342,7 +347,7 @@ inline void SleepS(unsigned int a_Time)
 #endif
 
 #ifdef __LINUX__
-#if !defined(OS_ANDROID) && !defined(OS_NACL) && defined(__GLIBC__) && ( defined(__DEBUG__) || defined(CRITICAL_SECTION_LOCK_LOG) )
+#if !defined(OS_ANDROID) && !defined(OS_NACL) && defined(__GLIBC__)
 #include <execinfo.h>
 #endif
 #endif
@@ -476,17 +481,13 @@ typedef HANDLE ThreadId;
 
 #include "Module.h"
 
-#if defined(__DEBUG__) || defined(CRITICAL_SECTION_LOCK_LOG)
-
 extern "C" {
 
-	extern void EXTERNAL DumpCallStack();
+extern void EXTERNAL DumpCallStack(const ThreadId threadId = 0);
+
 }
 
-int EXTERNAL GetCallStack(void ** addresses, int bufferSize);
-int EXTERNAL GetCallStack(ThreadId threadId, void ** addresses, int bufferSize);
-
-#endif
+uint32_t EXTERNAL GetCallStack(const ThreadId threadId, void* addresses[], const uint32_t bufferSize);
 
 #if !defined(__DEBUG)
 #define DEBUG_VARIABLE(X) (void)(X)
@@ -652,6 +653,11 @@ namespace Core {
     const uint32_t ERROR_PLAYER_UNAVAILABLE = 33;
     const uint32_t ERROR_FIRST_RESOURCE_NOT_FOUND = 34;
     const uint32_t ERROR_SECOND_RESOURCE_NOT_FOUND = 35;
+    const uint32_t ERROR_ALREADY_RELEASED = 36;
+    const uint32_t ERROR_NEGATIVE_ACKNOWLEDGE = 37;
+    const uint32_t ERROR_INVALID_SIGNATURE = 38;
+    const uint32_t ERROR_READ_ERROR = 39;
+    const uint32_t ERROR_WRITE_ERROR = 40;
 }
 }
 

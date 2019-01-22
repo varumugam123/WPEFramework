@@ -47,7 +47,6 @@ static KeyStatus CDMState(const OCDM::ISession::KeyStatus state) {
     return KeyStatus::InternalError;
 }
 
-
 struct ExtendedOpenCDMSession : public OpenCDMSession {
 private:
     ExtendedOpenCDMSession() = delete;
@@ -309,8 +308,6 @@ private:
     OCDM::ISession::KeyStatus _key;
     OpenCDMSessionCallbacks* _callback;
 };
-
-
 
 /* static */ OpenCDMAccessor* OpenCDMAccessor::_singleton = nullptr;
 

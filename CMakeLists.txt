@@ -16,6 +16,10 @@ set(WPEFRAMEWORK_PLATFORM "PC_UNIX" CACHE STRING
 
 option(INSTALL_LOCALLY "Install this project locally" OFF)
 option(POSITION_INDEPENDENT_CODE "Create position independent code on all targets including static libs" ON)
+option(BUILD_TESTS "Build tests (requires gtest)" OFF)
+option(DISABLE_TRACING "Even in debug build, disable tracing" OFF)
+
+set(NAMESPACE ${PROJECT_NAME} CACHE STRING "Namespace of the project")
 
 #FIXME: find how to set -Wall cmake style :-)
 set(CMAKE_COMPILER_IS_CLANG OFF)
@@ -39,6 +43,22 @@ if (INSTALL_LOCALLY)
 else()
     set(CMAKE_PREFIX_PATH ${CMAKE_SYSROOT}${CMAKE_INSTALL_PREFIX}/include/cmake ${CMAKE_PREFIX_PATH})
 endif()
+
+# make sure others can make use of the JSON creation tools as well!!!
+configure_file( "${CMAKE_SOURCE_DIR}/cmake/wpeframework.cmake.in"
+                "${CMAKE_CURRENT_BINARY_DIR}/WPEFramework.cmake"
+                @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/WPEFramework.cmake
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/cmake")
+# install(FILES ${CMAKE_CURRENT_BINARY_DIR}/WPEFramework.cmake
+#         DESTINATION "${CMAKE_INSTALL_PREFIX}/include/cmake"
+#         RENAME tools.cmake)
+# install(DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/config/
+#         DESTINATION include/cmake/tools)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/cmake/config/
+        DESTINATION include/cmake/WPEFramework/config)
+
 
 if (POSITION_INDEPENDENT_CODE)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -72,7 +92,6 @@ endif()
 
 message(STATUS "Setting up ${PROJECT_NAME} v${VERSION}")
 
-set(NAMESPACE ${PROJECT_NAME} CACHE STRING "Namespace of the project")
 
 if(APPLE)
     # Mac needed variables
@@ -84,4 +103,12 @@ if(APPLE)
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 
+if(DISABLE_TRACING)
+    add_definitions(-D_TRACE_LEVEL=0)
+endif()
+
 add_subdirectory(Source)
+
+if(BUILD_TESTS)
+    add_subdirectory(Tests)
+endif()
