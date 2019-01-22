@@ -258,7 +258,7 @@ private:
             _state = static_cast<sessionState>(_state | SESSION_MESSAGE | SESSION_UPDATE);
         }
         else {
-            _callback->process_challenge(this, _URL.c_str(), reinterpret_cast<const uint8_t*>(_message.c_str()), _message.length());
+            _callback->process_challenge(this, _URL.c_str(), reinterpret_cast<const uint8_t*>(_message.c_str()), static_cast<uint16_t>(_message.length()));
         }
     }
     // Event fired when MediaKeySession has found a usable key.
