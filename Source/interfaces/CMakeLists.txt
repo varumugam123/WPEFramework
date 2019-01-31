@@ -22,7 +22,8 @@ add_library(Marshalling SHARED
 	ProxyStubs_TestUtility.cpp
 	ProxyStubs_TimeSync.cpp
 	ProxyStubs_WebDriver.cpp
-	ProxyStubs_WebServer.cpp
+        ProxyStubs_WebServer.cpp
+        ProxyStubs_ProxyStubsValidator.cpp
         )
 
 add_library(Interfaces SHARED
@@ -48,6 +49,7 @@ set(PUBLIC_HEADERS
         IPlayGiga.h
         IPower.h
         IProvisioning.h
+        IProxyStubsValidator.h
         IRPCLink.h
         IStreaming.h
         ISwitchBoard.h
