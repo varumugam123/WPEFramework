@@ -8,7 +8,6 @@ add_library(Marshalling SHARED
 	ProxyStubs_Composition.cpp
 	ProxyStubs_ContentDecryption.cpp
 	ProxyStubs_Dictionary.cpp
-	ProxyStubs_External.cpp
 	ProxyStubs_Guide.cpp
 	ProxyStubs_IPNetwork.cpp
 	ProxyStubs_Memory.cpp
