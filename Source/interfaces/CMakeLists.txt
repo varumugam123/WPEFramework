@@ -2,6 +2,28 @@
 # ${TARGET} mentioned here is the name to be used by other CMake projects.
 add_library(Marshalling SHARED
         ProxyStubs.cpp
+	ProxyStubs_AVNClient.cpp
+	ProxyStubs_Bluetooth.cpp
+	ProxyStubs_Browser.cpp
+	ProxyStubs_Composition.cpp
+	ProxyStubs_ContentDecryption.cpp
+	ProxyStubs_Dictionary.cpp
+	ProxyStubs_External.cpp
+	ProxyStubs_Guide.cpp
+	ProxyStubs_IPNetwork.cpp
+	ProxyStubs_Memory.cpp
+	ProxyStubs_Netflix.cpp
+	ProxyStubs_PlayGiga.cpp
+	ProxyStubs_Power.cpp
+	ProxyStubs_Provisioning.cpp
+	ProxyStubs_RPCLink.cpp
+	ProxyStubs_RtspClient.cpp
+	ProxyStubs_Streaming.cpp
+	ProxyStubs_SwitchBoard.cpp
+	ProxyStubs_TestUtility.cpp
+	ProxyStubs_TimeSync.cpp
+	ProxyStubs_WebDriver.cpp
+	ProxyStubs_WebServer.cpp
         )
 
 add_library(Interfaces SHARED
