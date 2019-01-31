@@ -10,7 +10,7 @@ struct ITestUtility : virtual public Core::IUnknown {
 
     struct ICommand : virtual public Core::IUnknown {
 
-        enum { ID = 0x00000078 };
+        enum { ID = 0x00110078 };
 
         struct IIterator : virtual public Core::IUnknown {
 
