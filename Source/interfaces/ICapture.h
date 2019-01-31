@@ -1,6 +1,7 @@
-
 #ifndef __ICAPTURE_H__
 #define __ICAPTURE_H__
+
+// @stubgen:skip
 
 #include "Module.h"
 

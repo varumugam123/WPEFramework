@@ -1,6 +1,8 @@
 #ifndef _ITVCONTROL_H
 #define _ITVCONTROL_H
 
+// @stubgen:skip
+
 #include "Module.h"
 
 #define WPEPLAYER_PROCESS_NODE_ID "/tmp/player"

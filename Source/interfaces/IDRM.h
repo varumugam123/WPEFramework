@@ -17,6 +17,8 @@
 #ifndef CDMI_H_
 #define CDMI_H_
 
+// @stubgen:skip
+
 // For the support of portable data types such as uint8_t.
 #include <typeinfo>
 #include <vector>
