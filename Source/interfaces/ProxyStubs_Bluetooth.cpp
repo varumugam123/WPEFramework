@@ -380,8 +380,37 @@ ProxyStub::MethodHandler BluetoothDeviceIteratorStubMethods[] = {
 // IBluetooth::INotification interface stub definitions
 //
 // Methods:
+//  (0) virtual void Update(IBluetooth::IDevice *) = 0 
 
 ProxyStub::MethodHandler BluetoothNotificationStubMethods[] = {
+    // virtual void Update(IBluetooth::IDevice *) = 0
+    //
+    [](Core::ProxyType<Core::IPCChannel> & channel, Core::ProxyType<RPC::InvokeMessage> & message) {
+
+        RPC::Data::Input & input(message->Parameters());
+
+        // read parameters
+        RPC::Data::Frame::Reader reader(input.Reader());
+        IBluetooth::IDevice * param0 = reader.Number<IBluetooth::IDevice *>();
+        ASSERT((param0 != nullptr) && "Null IBluetooth::INotification interface pointer (IBluetooth::INotification::Update() stub)");
+        IBluetooth::IDevice * param0_proxy = RPC::Administrator::Instance().CreateProxy<IBluetooth::IDevice>(channel, param0, true, false);
+        ASSERT((param0_proxy != nullptr) && "Failed to create IBluetooth::IDevice proxy (IBluetooth::INotification::Update() stub)");
+
+        if (param0_proxy == nullptr) {
+            TRACE_L1("Failed to instantiate IBluetooth::IDevice proxy (IBluetooth::INotification::Update() stub)");
+            message->Response().Writer().Number<uint32_t>(Core::ERROR_RPC_CALL_FAILED);
+        } else {
+            // call implementation
+            IBluetooth::INotification * implementation = input.Implementation<IBluetooth::INotification>();
+            ASSERT((implementation != nullptr) && "Null IBluetooth::INotification implementation pointer (IBluetooth::INotification::Update() stub)");
+            implementation->Update(param0_proxy);
+
+            if (param0_proxy->Release() != Core::ERROR_NONE) {
+                TRACE_L1("IBluetooth::IDevice::Release() failed (IBluetooth::INotification::Update() stub)");
+            }
+        }
+    },
+
     nullptr
 }; // BluetoothNotificationStubMethods[]
 
@@ -694,6 +723,7 @@ public:
 // IBluetooth::INotification interface proxy definitions
 //
 // Methods:
+//  (0) virtual void Update(IBluetooth::IDevice *) = 0 
 
 class BluetoothNotificationProxy final : public ProxyStub::UnknownProxyType<IBluetooth::INotification> {
 public:
@@ -702,6 +732,16 @@ public:
     {
     }
 
+    void Update(IBluetooth::IDevice * param0) override
+    {
+        IPCMessage newMessage(BaseClass::Message(0));
+
+        // write parameters
+        RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
+        writer.Number<IBluetooth::IDevice *>(param0);
+
+        Invoke(newMessage);
+    }
 }; // class BluetoothNotificationProxy
 
 

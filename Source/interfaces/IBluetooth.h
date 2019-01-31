@@ -46,7 +46,7 @@ namespace Exchange {
 
             virtual ~INotification() {}
 
-            virtual void Update (IDevice* device);
+            virtual void Update (IDevice* device) = 0;
         };
 
         virtual bool IsScanning() const = 0;
