@@ -64,6 +64,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual float returnByValueFloat() = 0;
     virtual double returnByValueDouble() = 0;
     virtual long double returnByValueLongDouble() = 0;
+    // bool
+    virtual bool returnByValueBool() = 0;
 
     // ****************************************************************************************************************
     // return by const value
@@ -118,6 +120,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual const float returnByConstValueFloat() = 0;
     virtual const double returnByConstValueDouble() = 0;
     virtual const long double returnByConstValueLongDouble() = 0;
+    // bool
+    virtual const bool returnByConstValueBool() = 0;
 
     // ****************************************************************************************************************
     // pass by value
@@ -147,6 +151,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByValueString(string v1) = 0;
     // floating point
     virtual bool passByValueFloat(float v1, double v2, long double v3) = 0;
+    // bool
+    virtual bool passByValueBool(bool v1) = 0;
 
     // ****************************************************************************************************************
     // pass by const value
@@ -176,6 +182,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByConstValueString(const string v1) = 0;
     // floating point
     virtual bool passByConstValueFloat(const float v1, const double v2, const long double v3) = 0;
+    // bool
+    virtual bool passByConstValueBool(const bool v1) = 0;
 
     // ****************************************************************************************************************
     // pass by reference
@@ -205,6 +213,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual void passByReferenceString(string& v1) = 0;
     // floating point
     virtual void passByReferenceFloat(float& v1, double& v2, long double& v3) = 0;
+    // bool
+    virtual void passByReferenceBool(bool& v1) = 0;
 
     // ****************************************************************************************************************
     // pass by const reference
@@ -234,6 +244,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByConstReferenceString(const string& v1) = 0;
     // floating point
     virtual bool passByConstReferenceFloat(const float& v1, const double& v2, const long double& v3) = 0;
+    // bool
+    virtual bool passByConstReferenceBool(const bool& v1) = 0;
 
     // ToDo:
     //      - nesting
