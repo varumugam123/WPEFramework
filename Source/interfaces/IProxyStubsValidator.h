@@ -231,31 +231,45 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     // pass by reference
     // ****************************************************************************************************************
     // int with specific bit number
+    // @stubgen:stub
     virtual void passByReferenceUIntStrict(uint8_t& v1, uint16_t& v2, uint32_t& v3, uint64_t& v4) = 0;
+    // @stubgen:stub
     virtual void passByReferenceIntStrict(int8_t& v1, int16_t& v2, int32_t& v3, int64_t& v4) = 0;
     // short int
+    // @stubgen:stub
     virtual void passByReferenceShortInt(short& v1, short int& v2, signed short& v3, signed short int& v4) = 0;
     // unsigned short int
+    // @stubgen:stub
     virtual void passByReferenceUnsignedShortInt(unsigned short& v1, unsigned short int& v2) = 0;
     // int
+    // @stubgen:stub
     virtual void passByReferenceInt(int& v1, signed& v2, signed int& v3) = 0;
     // unsigned int
+    // @stubgen:stub
     virtual void passByReferenceUnsignedInt(unsigned& v1, unsigned int& v2) = 0;
     // long int
+    // @stubgen:stub
     virtual void passByReferenceLongInt(long& v1, long int& v2, signed long& v3, signed long int& v4) = 0;
     // unsigned long int
+    // @stubgen:stub
     virtual void passByReferenceUnsignedLongInt(unsigned long& v1, unsigned long int& v2) = 0;
     // long long int
+    // @stubgen:stub
     virtual void passByReferenceLongLongInt(long long& v1, long long int& v2, signed long long& v3, signed long long int& v4) = 0;
     // unsigned long long int
+    // @stubgen:stub
     virtual void passByReferenceUnsignedLongLongInt(unsigned long long& v1, unsigned long long int& v2) = 0;
     // char
+    // @stubgen:stub
     virtual void passByReferenceChar(char& v1, signed char& v2, unsigned char& v3) = 0;
     // string
+    // @stubgen:stub
     virtual void passByReferenceString(string& v1) = 0;
     // floating point
+    // @stubgen:stub
     virtual void passByReferenceFloat(float& v1, double& v2, long double& v3) = 0;
     // bool
+    // @stubgen:stub
     virtual void passByReferenceBool(bool& v1) = 0;
 
     // ****************************************************************************************************************
