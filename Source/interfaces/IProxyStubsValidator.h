@@ -28,6 +28,11 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
         ScopedTypedEnumValue2
     };
 
+    struct Structure {
+        int32_t field1;
+        int64_t field2;
+    };
+
     // ****************************************************************************************************************
     // return by value
     // ****************************************************************************************************************
@@ -87,6 +92,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual Enum returnByValueEnum() = 0;
     virtual ScopedEnum returnByValueScopedEnum() = 0;
     virtual ScopedTypedEnum returnByValueScopedTypedEnum() = 0;
+    // struct
+    virtual Structure returnByValueStructure() = 0;
 
     // ****************************************************************************************************************
     // return by const value
@@ -147,6 +154,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual const Enum returnByConstValueEnum() = 0;
     virtual const ScopedEnum returnByConstValueScopedEnum() = 0;
     virtual const ScopedTypedEnum returnByConstValueScopedTypedEnum() = 0;
+    // struct
+    virtual const Structure returnByConstValueStructure() = 0;
 
     // ****************************************************************************************************************
     // pass by value
@@ -180,6 +189,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByValueBool(bool v1) = 0;
     // enum
     virtual bool passByValueEnum(Enum v1, ScopedEnum v2, ScopedTypedEnum v3) = 0;
+    // structure
+    virtual bool passByValueStructure(Structure v1) = 0;
 
     // ****************************************************************************************************************
     // pass by const value
@@ -213,6 +224,8 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByConstValueBool(const bool v1) = 0;
     // enum
     virtual bool passByConstValueEnum(const Enum v1, const ScopedEnum v2, const ScopedTypedEnum v3) = 0;
+    // struct
+    virtual bool passByConstValueStructure(const Structure v1) = 0;
 
     // ****************************************************************************************************************
     // pass by reference
@@ -275,6 +288,7 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByConstReferenceFloat(const float& v1, const double& v2, const long double& v3) = 0;
     // bool
     virtual bool passByConstReferenceBool(const bool& v1) = 0;
+    virtual bool passByConstReferenceStructure(const Structure& v1) = 0;
 
     // ToDo:
     //      - nesting
