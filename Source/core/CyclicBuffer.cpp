@@ -382,13 +382,9 @@ namespace Core {
 
                 _administration->_agents++;
 
-                AdminUnlock();
-
                 timeLeft = SignalLock(timeLeft);
 
                 _administration->_agents--;
-
-                AdminLock();
 
                 if (_alert == true) {
                     _alert = false;
