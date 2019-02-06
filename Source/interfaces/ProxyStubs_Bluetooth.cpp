@@ -24,12 +24,12 @@ using namespace Exchange;
 // IBluetooth interface stub definitions
 //
 // Methods:
-//  (0) virtual bool IsScanning() const = 0 
-//  (1) virtual uint32_t Register(IBluetooth::INotification *) = 0 
-//  (2) virtual uint32_t Unregister(IBluetooth::INotification *) = 0 
-//  (3) virtual bool Scan(const bool) = 0 
-//  (4) virtual IBluetooth::IDevice * Device(const string &) = 0 
-//  (5) virtual IBluetooth::IDevice::IIterator * Devices() = 0 
+//  (0) virtual bool IsScanning() const = 0
+//  (1) virtual uint32_t Register(IBluetooth::INotification *) = 0
+//  (2) virtual uint32_t Unregister(IBluetooth::INotification *) = 0
+//  (3) virtual bool Scan(const bool) = 0
+//  (4) virtual IBluetooth::IDevice * Device(const string &) = 0
+//  (5) virtual IBluetooth::IDevice::IIterator * Devices() = 0
 
 ProxyStub::MethodHandler BluetoothStubMethods[] = {
     // virtual bool IsScanning() const = 0
@@ -175,13 +175,13 @@ ProxyStub::MethodHandler BluetoothStubMethods[] = {
 // IBluetooth::IDevice interface stub definitions
 //
 // Methods:
-//  (0) virtual string Address() const = 0 
-//  (1) virtual string Name() const = 0 
-//  (2) virtual bool IsDiscovered() const = 0 
-//  (3) virtual bool IsPaired() const = 0 
-//  (4) virtual bool IsConnected() const = 0 
-//  (5) virtual uint32_t Pair(const string &) = 0 
-//  (6) virtual uint32_t Unpair() = 0 
+//  (0) virtual string Address() const = 0
+//  (1) virtual string Name() const = 0
+//  (2) virtual bool IsDiscovered() const = 0
+//  (3) virtual bool IsPaired() const = 0
+//  (4) virtual bool IsConnected() const = 0
+//  (5) virtual uint32_t Pair(const string &) = 0
+//  (6) virtual uint32_t Unpair() = 0
 
 ProxyStub::MethodHandler BluetoothDeviceStubMethods[] = {
     // virtual string Address() const = 0
@@ -307,10 +307,10 @@ ProxyStub::MethodHandler BluetoothDeviceStubMethods[] = {
 // IBluetooth::IDevice::IIterator interface stub definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool IsValid() const = 0 
-//  (2) virtual bool Next() = 0 
-//  (3) virtual IBluetooth::IDevice * Current() = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool IsValid() const = 0
+//  (2) virtual bool Next() = 0
+//  (3) virtual IBluetooth::IDevice * Current() = 0
 
 ProxyStub::MethodHandler BluetoothDeviceIteratorStubMethods[] = {
     // virtual void Reset() = 0
@@ -380,7 +380,7 @@ ProxyStub::MethodHandler BluetoothDeviceIteratorStubMethods[] = {
 // IBluetooth::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Update(IBluetooth::IDevice *) = 0 
+//  (0) virtual void Update(IBluetooth::IDevice *) = 0
 
 ProxyStub::MethodHandler BluetoothNotificationStubMethods[] = {
     // virtual void Update(IBluetooth::IDevice *) = 0
@@ -423,12 +423,12 @@ ProxyStub::MethodHandler BluetoothNotificationStubMethods[] = {
 // IBluetooth interface proxy definitions
 //
 // Methods:
-//  (0) virtual bool IsScanning() const = 0 
-//  (1) virtual uint32_t Register(IBluetooth::INotification *) = 0 
-//  (2) virtual uint32_t Unregister(IBluetooth::INotification *) = 0 
-//  (3) virtual bool Scan(const bool) = 0 
-//  (4) virtual IBluetooth::IDevice * Device(const string &) = 0 
-//  (5) virtual IBluetooth::IDevice::IIterator * Devices() = 0 
+//  (0) virtual bool IsScanning() const = 0
+//  (1) virtual uint32_t Register(IBluetooth::INotification *) = 0
+//  (2) virtual uint32_t Unregister(IBluetooth::INotification *) = 0
+//  (3) virtual bool Scan(const bool) = 0
+//  (4) virtual IBluetooth::IDevice * Device(const string &) = 0
+//  (5) virtual IBluetooth::IDevice::IIterator * Devices() = 0
 
 class BluetoothProxy final : public ProxyStub::UnknownProxyType<IBluetooth> {
 public:
@@ -542,13 +542,13 @@ public:
 // IBluetooth::IDevice interface proxy definitions
 //
 // Methods:
-//  (0) virtual string Address() const = 0 
-//  (1) virtual string Name() const = 0 
-//  (2) virtual bool IsDiscovered() const = 0 
-//  (3) virtual bool IsPaired() const = 0 
-//  (4) virtual bool IsConnected() const = 0 
-//  (5) virtual uint32_t Pair(const string &) = 0 
-//  (6) virtual uint32_t Unpair() = 0 
+//  (0) virtual string Address() const = 0
+//  (1) virtual string Name() const = 0
+//  (2) virtual bool IsDiscovered() const = 0
+//  (3) virtual bool IsPaired() const = 0
+//  (4) virtual bool IsConnected() const = 0
+//  (5) virtual uint32_t Pair(const string &) = 0
+//  (6) virtual uint32_t Unpair() = 0
 
 class BluetoothDeviceProxy final : public ProxyStub::UnknownProxyType<IBluetooth::IDevice> {
 public:
@@ -657,10 +657,10 @@ public:
 // IBluetooth::IDevice::IIterator interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool IsValid() const = 0 
-//  (2) virtual bool Next() = 0 
-//  (3) virtual IBluetooth::IDevice * Current() = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool IsValid() const = 0
+//  (2) virtual bool Next() = 0
+//  (3) virtual IBluetooth::IDevice * Current() = 0
 
 class BluetoothDeviceIteratorProxy final : public ProxyStub::UnknownProxyType<IBluetooth::IDevice::IIterator> {
 public:
@@ -723,7 +723,7 @@ public:
 // IBluetooth::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Update(IBluetooth::IDevice *) = 0 
+//  (0) virtual void Update(IBluetooth::IDevice *) = 0
 
 class BluetoothNotificationProxy final : public ProxyStub::UnknownProxyType<IBluetooth::INotification> {
 public:

@@ -22,8 +22,8 @@ using namespace Exchange;
 // IProvisioning interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(IProvisioning::INotification *) = 0 
-//  (1) virtual void Unregister(IProvisioning::INotification *) = 0 
+//  (0) virtual void Register(IProvisioning::INotification *) = 0
+//  (1) virtual void Unregister(IProvisioning::INotification *) = 0
 
 ProxyStub::MethodHandler ProvisioningStubMethods[] = {
     // virtual void Register(IProvisioning::INotification *) = 0
@@ -89,7 +89,7 @@ ProxyStub::MethodHandler ProvisioningStubMethods[] = {
 // IProvisioning::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Provisioned(const string &) = 0 
+//  (0) virtual void Provisioned(const string &) = 0
 
 ProxyStub::MethodHandler ProvisioningNotificationStubMethods[] = {
     // virtual void Provisioned(const string &) = 0
@@ -120,8 +120,8 @@ ProxyStub::MethodHandler ProvisioningNotificationStubMethods[] = {
 // IProvisioning interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(IProvisioning::INotification *) = 0 
-//  (1) virtual void Unregister(IProvisioning::INotification *) = 0 
+//  (0) virtual void Register(IProvisioning::INotification *) = 0
+//  (1) virtual void Unregister(IProvisioning::INotification *) = 0
 
 class ProvisioningProxy final : public ProxyStub::UnknownProxyType<IProvisioning> {
 public:
@@ -157,7 +157,7 @@ public:
 // IProvisioning::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Provisioned(const string &) = 0 
+//  (0) virtual void Provisioned(const string &) = 0
 
 class ProvisioningNotificationProxy final : public ProxyStub::UnknownProxyType<IProvisioning::INotification> {
 public:

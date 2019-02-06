@@ -22,12 +22,12 @@ using namespace Exchange;
 // ITimeSync interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(ITimeSync::INotification *) = 0 
-//  (1) virtual void Unregister(ITimeSync::INotification *) = 0 
-//  (2) virtual uint32_t Synchronize() = 0 
-//  (3) virtual void Cancel() = 0 
-//  (4) virtual string Source() const = 0 
-//  (5) virtual uint64_t SyncTime() const = 0 
+//  (0) virtual void Register(ITimeSync::INotification *) = 0
+//  (1) virtual void Unregister(ITimeSync::INotification *) = 0
+//  (2) virtual uint32_t Synchronize() = 0
+//  (3) virtual void Cancel() = 0
+//  (4) virtual string Source() const = 0
+//  (5) virtual uint64_t SyncTime() const = 0
 
 ProxyStub::MethodHandler TimeSyncStubMethods[] = {
     // virtual void Register(ITimeSync::INotification *) = 0
@@ -153,7 +153,7 @@ ProxyStub::MethodHandler TimeSyncStubMethods[] = {
 // ITimeSync::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Completed() = 0 
+//  (0) virtual void Completed() = 0
 
 ProxyStub::MethodHandler TimeSyncNotificationStubMethods[] = {
     // virtual void Completed() = 0
@@ -180,12 +180,12 @@ ProxyStub::MethodHandler TimeSyncNotificationStubMethods[] = {
 // ITimeSync interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(ITimeSync::INotification *) = 0 
-//  (1) virtual void Unregister(ITimeSync::INotification *) = 0 
-//  (2) virtual uint32_t Synchronize() = 0 
-//  (3) virtual void Cancel() = 0 
-//  (4) virtual string Source() const = 0 
-//  (5) virtual uint64_t SyncTime() const = 0 
+//  (0) virtual void Register(ITimeSync::INotification *) = 0
+//  (1) virtual void Unregister(ITimeSync::INotification *) = 0
+//  (2) virtual uint32_t Synchronize() = 0
+//  (3) virtual void Cancel() = 0
+//  (4) virtual string Source() const = 0
+//  (5) virtual uint64_t SyncTime() const = 0
 
 class TimeSyncProxy final : public ProxyStub::UnknownProxyType<ITimeSync> {
 public:
@@ -267,7 +267,7 @@ public:
 // ITimeSync::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Completed() = 0 
+//  (0) virtual void Completed() = 0
 
 class TimeSyncNotificationProxy final : public ProxyStub::UnknownProxyType<ITimeSync::INotification> {
 public:

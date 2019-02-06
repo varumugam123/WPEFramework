@@ -22,11 +22,11 @@ using namespace Exchange;
 // IIPNetwork interface stub definitions
 //
 // Methods:
-//  (0) virtual uint32_t AddAddress(const string &) = 0 
-//  (1) virtual uint32_t AddAddress(const string &, const string &, const string &, const string &, const uint8_t) = 0 
-//  (2) virtual uint32_t RemoveAddress(const string &, const string &, const string &, const string &) = 0 
-//  (3) virtual uint32_t AddDNS(IIPNetwork::IDNSServers *) = 0 
-//  (4) virtual uint32_t RemoveDNS(IIPNetwork::IDNSServers *) = 0 
+//  (0) virtual uint32_t AddAddress(const string &) = 0
+//  (1) virtual uint32_t AddAddress(const string &, const string &, const string &, const string &, const uint8_t) = 0
+//  (2) virtual uint32_t RemoveAddress(const string &, const string &, const string &, const string &) = 0
+//  (3) virtual uint32_t AddDNS(IIPNetwork::IDNSServers *) = 0
+//  (4) virtual uint32_t RemoveDNS(IIPNetwork::IDNSServers *) = 0
 
 ProxyStub::MethodHandler IPNetworkStubMethods[] = {
     // virtual uint32_t AddAddress(const string &) = 0
@@ -167,9 +167,9 @@ ProxyStub::MethodHandler IPNetworkStubMethods[] = {
 // IIPNetwork::IDNSServers interface stub definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool Next() = 0 
-//  (2) virtual string Server() const = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool Next() = 0
+//  (2) virtual string Server() const = 0
 
 ProxyStub::MethodHandler IPNetworkDNSServersStubMethods[] = {
     // virtual void Reset() = 0
@@ -228,11 +228,11 @@ ProxyStub::MethodHandler IPNetworkDNSServersStubMethods[] = {
 // IIPNetwork interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint32_t AddAddress(const string &) = 0 
-//  (1) virtual uint32_t AddAddress(const string &, const string &, const string &, const string &, const uint8_t) = 0 
-//  (2) virtual uint32_t RemoveAddress(const string &, const string &, const string &, const string &) = 0 
-//  (3) virtual uint32_t AddDNS(IIPNetwork::IDNSServers *) = 0 
-//  (4) virtual uint32_t RemoveDNS(IIPNetwork::IDNSServers *) = 0 
+//  (0) virtual uint32_t AddAddress(const string &) = 0
+//  (1) virtual uint32_t AddAddress(const string &, const string &, const string &, const string &, const uint8_t) = 0
+//  (2) virtual uint32_t RemoveAddress(const string &, const string &, const string &, const string &) = 0
+//  (3) virtual uint32_t AddDNS(IIPNetwork::IDNSServers *) = 0
+//  (4) virtual uint32_t RemoveDNS(IIPNetwork::IDNSServers *) = 0
 
 class IPNetworkProxy final : public ProxyStub::UnknownProxyType<IIPNetwork> {
 public:
@@ -338,9 +338,9 @@ public:
 // IIPNetwork::IDNSServers interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool Next() = 0 
-//  (2) virtual string Server() const = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool Next() = 0
+//  (2) virtual string Server() const = 0
 
 class IPNetworkDNSServersProxy final : public ProxyStub::UnknownProxyType<IIPNetwork::IDNSServers> {
 public:

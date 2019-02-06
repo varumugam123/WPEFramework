@@ -22,11 +22,11 @@ using namespace Exchange;
 // ISwitchBoard interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(ISwitchBoard::INotification *) = 0 
-//  (1) virtual void Unregister(ISwitchBoard::INotification *) = 0 
-//  (2) virtual bool IsActive(const string &) const = 0 
-//  (3) virtual uint32_t Activate(const string &) = 0 
-//  (4) virtual uint32_t Deactivate(const string &) = 0 
+//  (0) virtual void Register(ISwitchBoard::INotification *) = 0
+//  (1) virtual void Unregister(ISwitchBoard::INotification *) = 0
+//  (2) virtual bool IsActive(const string &) const = 0
+//  (3) virtual uint32_t Activate(const string &) = 0
+//  (4) virtual uint32_t Deactivate(const string &) = 0
 
 ProxyStub::MethodHandler SwitchBoardStubMethods[] = {
     // virtual void Register(ISwitchBoard::INotification *) = 0
@@ -152,7 +152,7 @@ ProxyStub::MethodHandler SwitchBoardStubMethods[] = {
 // ISwitchBoard::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Activated(const string &) = 0 
+//  (0) virtual void Activated(const string &) = 0
 
 ProxyStub::MethodHandler SwitchBoardNotificationStubMethods[] = {
     // virtual void Activated(const string &) = 0
@@ -183,11 +183,11 @@ ProxyStub::MethodHandler SwitchBoardNotificationStubMethods[] = {
 // ISwitchBoard interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(ISwitchBoard::INotification *) = 0 
-//  (1) virtual void Unregister(ISwitchBoard::INotification *) = 0 
-//  (2) virtual bool IsActive(const string &) const = 0 
-//  (3) virtual uint32_t Activate(const string &) = 0 
-//  (4) virtual uint32_t Deactivate(const string &) = 0 
+//  (0) virtual void Register(ISwitchBoard::INotification *) = 0
+//  (1) virtual void Unregister(ISwitchBoard::INotification *) = 0
+//  (2) virtual bool IsActive(const string &) const = 0
+//  (3) virtual uint32_t Activate(const string &) = 0
+//  (4) virtual uint32_t Deactivate(const string &) = 0
 
 class SwitchBoardProxy final : public ProxyStub::UnknownProxyType<ISwitchBoard> {
 public:
@@ -274,7 +274,7 @@ public:
 // ISwitchBoard::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Activated(const string &) = 0 
+//  (0) virtual void Activated(const string &) = 0
 
 class SwitchBoardNotificationProxy final : public ProxyStub::UnknownProxyType<ISwitchBoard::INotification> {
 public:

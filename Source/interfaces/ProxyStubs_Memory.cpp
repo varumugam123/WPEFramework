@@ -21,12 +21,12 @@ using namespace Exchange;
 // IMemory interface stub definitions
 //
 // Methods:
-//  (0) virtual uint64_t Resident() const = 0 
-//  (1) virtual uint64_t Allocated() const = 0 
-//  (2) virtual uint64_t Shared() const = 0 
-//  (3) virtual uint8_t Processes() const = 0 
-//  (4) virtual const bool IsOperational() const = 0 
-//  (5) virtual void Observe(const uint32_t) = 0 
+//  (0) virtual uint64_t Resident() const = 0
+//  (1) virtual uint64_t Allocated() const = 0
+//  (2) virtual uint64_t Shared() const = 0
+//  (3) virtual uint8_t Processes() const = 0
+//  (4) virtual const bool IsOperational() const = 0
+//  (5) virtual void Observe(const uint32_t) = 0
 
 ProxyStub::MethodHandler MemoryStubMethods[] = {
     // virtual uint64_t Resident() const = 0
@@ -137,12 +137,12 @@ ProxyStub::MethodHandler MemoryStubMethods[] = {
 // IMemory interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint64_t Resident() const = 0 
-//  (1) virtual uint64_t Allocated() const = 0 
-//  (2) virtual uint64_t Shared() const = 0 
-//  (3) virtual uint8_t Processes() const = 0 
-//  (4) virtual const bool IsOperational() const = 0 
-//  (5) virtual void Observe(const uint32_t) = 0 
+//  (0) virtual uint64_t Resident() const = 0
+//  (1) virtual uint64_t Allocated() const = 0
+//  (2) virtual uint64_t Shared() const = 0
+//  (3) virtual uint8_t Processes() const = 0
+//  (4) virtual const bool IsOperational() const = 0
+//  (5) virtual void Observe(const uint32_t) = 0
 
 class MemoryProxy final : public ProxyStub::UnknownProxyType<IMemory> {
 public:

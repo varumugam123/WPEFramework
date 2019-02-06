@@ -21,10 +21,10 @@ using namespace Exchange;
 // IWebDriver interface stub definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(::WPEFramework::PluginHost::IShell *) = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
 
 ProxyStub::MethodHandler WebDriverStubMethods[] = {
-    // virtual uint32_t Configure(::WPEFramework::PluginHost::IShell *) = 0
+    // virtual uint32_t Configure(PluginHost::IShell *) = 0
     //
     [](Core::ProxyType<Core::IPCChannel> & channel, Core::ProxyType<RPC::InvokeMessage> & message) {
 
@@ -32,13 +32,13 @@ ProxyStub::MethodHandler WebDriverStubMethods[] = {
 
         // read parameters
         RPC::Data::Frame::Reader reader(input.Reader());
-        ::WPEFramework::PluginHost::IShell * param0 = reader.Number<::WPEFramework::PluginHost::IShell *>();
+        PluginHost::IShell * param0 = reader.Number<PluginHost::IShell *>();
         ASSERT((param0 != nullptr) && "Null IWebDriver interface pointer (IWebDriver::Configure() stub)");
-        ::WPEFramework::PluginHost::IShell * param0_proxy = RPC::Administrator::Instance().CreateProxy<::WPEFramework::PluginHost::IShell>(channel, param0, true, false);
-        ASSERT((param0_proxy != nullptr) && "Failed to create ::WPEFramework::PluginHost::IShell proxy (IWebDriver::Configure() stub)");
+        PluginHost::IShell * param0_proxy = RPC::Administrator::Instance().CreateProxy<PluginHost::IShell>(channel, param0, true, false);
+        ASSERT((param0_proxy != nullptr) && "Failed to create PluginHost::IShell proxy (IWebDriver::Configure() stub)");
 
         if (param0_proxy == nullptr) {
-            TRACE_L1("Failed to instantiate ::WPEFramework::PluginHost::IShell proxy (IWebDriver::Configure() stub)");
+            TRACE_L1("Failed to instantiate PluginHost::IShell proxy (IWebDriver::Configure() stub)");
             message->Response().Writer().Number<uint32_t>(Core::ERROR_RPC_CALL_FAILED);
         } else {
             // call implementation
@@ -47,7 +47,7 @@ ProxyStub::MethodHandler WebDriverStubMethods[] = {
             const uint32_t output = implementation->Configure(param0_proxy);
 
             if (param0_proxy->Release() != Core::ERROR_NONE) {
-                TRACE_L1("::WPEFramework::PluginHost::IShell::Release() failed (IWebDriver::Configure() stub)");
+                TRACE_L1("PluginHost::IShell::Release() failed (IWebDriver::Configure() stub)");
             }
 
             // write return value
@@ -68,7 +68,7 @@ ProxyStub::MethodHandler WebDriverStubMethods[] = {
 // IWebDriver interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(::WPEFramework::PluginHost::IShell *) = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
 
 class WebDriverProxy final : public ProxyStub::UnknownProxyType<IWebDriver> {
 public:
@@ -77,13 +77,13 @@ public:
     {
     }
 
-    uint32_t Configure(::WPEFramework::PluginHost::IShell * param0) override
+    uint32_t Configure(PluginHost::IShell * param0) override
     {
         IPCMessage newMessage(BaseClass::Message(0));
 
         // write parameters
         RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-        writer.Number<::WPEFramework::PluginHost::IShell *>(param0);
+        writer.Number<PluginHost::IShell *>(param0);
 
         Invoke(newMessage);
 

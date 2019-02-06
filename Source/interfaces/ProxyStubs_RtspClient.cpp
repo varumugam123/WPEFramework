@@ -21,12 +21,12 @@ using namespace Exchange;
 // IRtspClient interface stub definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (1) virtual uint32_t Setup(const string &, uint32_t) = 0 
-//  (2) virtual uint32_t Play(int32_t, uint32_t) = 0 
-//  (3) virtual uint32_t Teardown() = 0 
-//  (4) virtual void Set(const string &, const string &) = 0 
-//  (5) virtual string Get(const string &) const = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (1) virtual uint32_t Setup(const string &, uint32_t) = 0
+//  (2) virtual uint32_t Play(int32_t, uint32_t) = 0
+//  (3) virtual uint32_t Teardown() = 0
+//  (4) virtual void Set(const string &, const string &) = 0
+//  (5) virtual string Get(const string &) const = 0
 
 ProxyStub::MethodHandler RtspClientStubMethods[] = {
     // virtual uint32_t Configure(PluginHost::IShell *) = 0
@@ -168,12 +168,12 @@ ProxyStub::MethodHandler RtspClientStubMethods[] = {
 // IRtspClient interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (1) virtual uint32_t Setup(const string &, uint32_t) = 0 
-//  (2) virtual uint32_t Play(int32_t, uint32_t) = 0 
-//  (3) virtual uint32_t Teardown() = 0 
-//  (4) virtual void Set(const string &, const string &) = 0 
-//  (5) virtual string Get(const string &) const = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (1) virtual uint32_t Setup(const string &, uint32_t) = 0
+//  (2) virtual uint32_t Play(int32_t, uint32_t) = 0
+//  (3) virtual uint32_t Teardown() = 0
+//  (4) virtual void Set(const string &, const string &) = 0
+//  (5) virtual string Get(const string &) const = 0
 
 class RtspClientProxy final : public ProxyStub::UnknownProxyType<IRtspClient> {
 public:

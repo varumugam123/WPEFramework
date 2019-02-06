@@ -23,18 +23,18 @@ using namespace Exchange;
 // IComposition interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(IComposition::INotification *) = 0 
-//  (1) virtual void Unregister(IComposition::INotification *) = 0 
-//  (2) virtual IComposition::IClient * Client(const uint8_t) = 0 
-//  (3) virtual IComposition::IClient * Client(const string &) = 0 
-//  (4) virtual uint32_t Geometry(const string &, const IComposition::Rectangle &) = 0 
-//  (5) virtual IComposition::Rectangle Geometry(const string &) const = 0 
-//  (6) virtual uint32_t ToTop(const string &) = 0 
-//  (7) virtual uint32_t PutBelow(const string &, const string &) = 0 
-//  (8) virtual RPC::IStringIterator * ClientsInZorder() const = 0 
-//  (9) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (10) virtual void Resolution(const IComposition::ScreenResolution) = 0 
-//  (11) virtual IComposition::ScreenResolution Resolution() const = 0 
+//  (0) virtual void Register(IComposition::INotification *) = 0
+//  (1) virtual void Unregister(IComposition::INotification *) = 0
+//  (2) virtual IComposition::IClient * Client(const uint8_t) = 0
+//  (3) virtual IComposition::IClient * Client(const string &) = 0
+//  (4) virtual uint32_t Geometry(const string &, const IComposition::Rectangle &) = 0
+//  (5) virtual IComposition::Rectangle Geometry(const string &) const = 0
+//  (6) virtual uint32_t ToTop(const string &) = 0
+//  (7) virtual uint32_t PutBelow(const string &, const string &) = 0
+//  (8) virtual RPC::IStringIterator * ClientsInZorder() const = 0
+//  (9) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (10) virtual void Resolution(const IComposition::ScreenResolution) = 0
+//  (11) virtual IComposition::ScreenResolution Resolution() const = 0
 
 ProxyStub::MethodHandler CompositionStubMethods[] = {
     // virtual void Register(IComposition::INotification *) = 0
@@ -311,11 +311,11 @@ ProxyStub::MethodHandler CompositionStubMethods[] = {
 // IComposition::IClient interface stub definitions
 //
 // Methods:
-//  (0) virtual string Name() const = 0 
-//  (1) virtual void Kill() = 0 
-//  (2) virtual void Opacity(const uint32_t) = 0 
-//  (3) virtual void ChangedGeometry(const IComposition::Rectangle &) = 0 
-//  (4) virtual void ChangedZOrder(const uint8_t) = 0 
+//  (0) virtual string Name() const = 0
+//  (1) virtual void Kill() = 0
+//  (2) virtual void Opacity(const uint32_t) = 0
+//  (3) virtual void ChangedGeometry(const IComposition::Rectangle &) = 0
+//  (4) virtual void ChangedZOrder(const uint8_t) = 0
 
 ProxyStub::MethodHandler CompositionClientStubMethods[] = {
     // virtual string Name() const = 0
@@ -406,8 +406,8 @@ ProxyStub::MethodHandler CompositionClientStubMethods[] = {
 // IComposition::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Attached(IComposition::IClient *) = 0 
-//  (1) virtual void Detached(IComposition::IClient *) = 0 
+//  (0) virtual void Attached(IComposition::IClient *) = 0
+//  (1) virtual void Detached(IComposition::IClient *) = 0
 
 ProxyStub::MethodHandler CompositionNotificationStubMethods[] = {
     // virtual void Attached(IComposition::IClient *) = 0
@@ -478,18 +478,18 @@ ProxyStub::MethodHandler CompositionNotificationStubMethods[] = {
 // IComposition interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(IComposition::INotification *) = 0 
-//  (1) virtual void Unregister(IComposition::INotification *) = 0 
-//  (2) virtual IComposition::IClient * Client(const uint8_t) = 0 
-//  (3) virtual IComposition::IClient * Client(const string &) = 0 
-//  (4) virtual uint32_t Geometry(const string &, const IComposition::Rectangle &) = 0 
-//  (5) virtual IComposition::Rectangle Geometry(const string &) const = 0 
-//  (6) virtual uint32_t ToTop(const string &) = 0 
-//  (7) virtual uint32_t PutBelow(const string &, const string &) = 0 
-//  (8) virtual RPC::IStringIterator * ClientsInZorder() const = 0 
-//  (9) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (10) virtual void Resolution(const IComposition::ScreenResolution) = 0 
-//  (11) virtual IComposition::ScreenResolution Resolution() const = 0 
+//  (0) virtual void Register(IComposition::INotification *) = 0
+//  (1) virtual void Unregister(IComposition::INotification *) = 0
+//  (2) virtual IComposition::IClient * Client(const uint8_t) = 0
+//  (3) virtual IComposition::IClient * Client(const string &) = 0
+//  (4) virtual uint32_t Geometry(const string &, const IComposition::Rectangle &) = 0
+//  (5) virtual IComposition::Rectangle Geometry(const string &) const = 0
+//  (6) virtual uint32_t ToTop(const string &) = 0
+//  (7) virtual uint32_t PutBelow(const string &, const string &) = 0
+//  (8) virtual RPC::IStringIterator * ClientsInZorder() const = 0
+//  (9) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (10) virtual void Resolution(const IComposition::ScreenResolution) = 0
+//  (11) virtual IComposition::ScreenResolution Resolution() const = 0
 
 class CompositionProxy final : public ProxyStub::UnknownProxyType<IComposition> {
 public:
@@ -701,11 +701,11 @@ public:
 // IComposition::IClient interface proxy definitions
 //
 // Methods:
-//  (0) virtual string Name() const = 0 
-//  (1) virtual void Kill() = 0 
-//  (2) virtual void Opacity(const uint32_t) = 0 
-//  (3) virtual void ChangedGeometry(const IComposition::Rectangle &) = 0 
-//  (4) virtual void ChangedZOrder(const uint8_t) = 0 
+//  (0) virtual string Name() const = 0
+//  (1) virtual void Kill() = 0
+//  (2) virtual void Opacity(const uint32_t) = 0
+//  (3) virtual void ChangedGeometry(const IComposition::Rectangle &) = 0
+//  (4) virtual void ChangedZOrder(const uint8_t) = 0
 
 class CompositionClientProxy final : public ProxyStub::UnknownProxyType<IComposition::IClient> {
 public:
@@ -776,8 +776,8 @@ public:
 // IComposition::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Attached(IComposition::IClient *) = 0 
-//  (1) virtual void Detached(IComposition::IClient *) = 0 
+//  (0) virtual void Attached(IComposition::IClient *) = 0
+//  (1) virtual void Detached(IComposition::IClient *) = 0
 
 class CompositionNotificationProxy final : public ProxyStub::UnknownProxyType<IComposition::INotification> {
 public:

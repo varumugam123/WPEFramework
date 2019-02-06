@@ -21,9 +21,9 @@ using namespace Exchange;
 // IWebServer interface stub definitions
 //
 // Methods:
-//  (0) virtual void AddProxy(const string &, const string &, const string &) = 0 
-//  (1) virtual void RemoveProxy(const string &) = 0 
-//  (2) virtual string Accessor() const = 0 
+//  (0) virtual void AddProxy(const string &, const string &, const string &) = 0
+//  (1) virtual void RemoveProxy(const string &) = 0
+//  (2) virtual string Accessor() const = 0
 
 ProxyStub::MethodHandler WebServerStubMethods[] = {
     // virtual void AddProxy(const string &, const string &, const string &) = 0
@@ -88,9 +88,9 @@ ProxyStub::MethodHandler WebServerStubMethods[] = {
 // IWebServer interface proxy definitions
 //
 // Methods:
-//  (0) virtual void AddProxy(const string &, const string &, const string &) = 0 
-//  (1) virtual void RemoveProxy(const string &) = 0 
-//  (2) virtual string Accessor() const = 0 
+//  (0) virtual void AddProxy(const string &, const string &, const string &) = 0
+//  (1) virtual void RemoveProxy(const string &) = 0
+//  (2) virtual string Accessor() const = 0
 
 class WebServerProxy final : public ProxyStub::UnknownProxyType<IWebServer> {
 public:

@@ -22,11 +22,11 @@ using namespace Exchange;
 // IRPCLink interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(IRPCLink::INotification *) = 0 
-//  (1) virtual void Unregister(IRPCLink::INotification *) = 0 
-//  (2) virtual uint32_t Start(const uint32_t, const string &) = 0 
-//  (3) virtual uint32_t Stop() = 0 
-//  (4) virtual uint32_t ForceCallback() = 0 
+//  (0) virtual void Register(IRPCLink::INotification *) = 0
+//  (1) virtual void Unregister(IRPCLink::INotification *) = 0
+//  (2) virtual uint32_t Start(const uint32_t, const string &) = 0
+//  (3) virtual uint32_t Stop() = 0
+//  (4) virtual uint32_t ForceCallback() = 0
 
 ProxyStub::MethodHandler RPCLinkStubMethods[] = {
     // virtual void Register(IRPCLink::INotification *) = 0
@@ -145,7 +145,7 @@ ProxyStub::MethodHandler RPCLinkStubMethods[] = {
 // IRPCLink::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Completed(const uint32_t, const string &) = 0 
+//  (0) virtual void Completed(const uint32_t, const string &) = 0
 
 ProxyStub::MethodHandler RPCLinkNotificationStubMethods[] = {
     // virtual void Completed(const uint32_t, const string &) = 0
@@ -177,11 +177,11 @@ ProxyStub::MethodHandler RPCLinkNotificationStubMethods[] = {
 // IRPCLink interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(IRPCLink::INotification *) = 0 
-//  (1) virtual void Unregister(IRPCLink::INotification *) = 0 
-//  (2) virtual uint32_t Start(const uint32_t, const string &) = 0 
-//  (3) virtual uint32_t Stop() = 0 
-//  (4) virtual uint32_t ForceCallback() = 0 
+//  (0) virtual void Register(IRPCLink::INotification *) = 0
+//  (1) virtual void Unregister(IRPCLink::INotification *) = 0
+//  (2) virtual uint32_t Start(const uint32_t, const string &) = 0
+//  (3) virtual uint32_t Stop() = 0
+//  (4) virtual uint32_t ForceCallback() = 0
 
 class RPCLinkProxy final : public ProxyStub::UnknownProxyType<IRPCLink> {
 public:
@@ -261,7 +261,7 @@ public:
 // IRPCLink::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Completed(const uint32_t, const string &) = 0 
+//  (0) virtual void Completed(const uint32_t, const string &) = 0
 
 class RPCLinkNotificationProxy final : public ProxyStub::UnknownProxyType<IRPCLink::INotification> {
 public:

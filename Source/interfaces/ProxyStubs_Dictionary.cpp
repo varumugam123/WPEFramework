@@ -23,11 +23,11 @@ using namespace Exchange;
 // IDictionary interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(const string &, IDictionary::INotification *) = 0 
-//  (1) virtual void Unregister(const string &, IDictionary::INotification *) = 0 
-//  (2) virtual bool Get(const string &, const string &, string &) const = 0 
-//  (3) virtual bool Set(const string &, const string &, const string &) = 0 
-//  (4) virtual IDictionary::IIterator * Get(const string &) const = 0 
+//  (0) virtual void Register(const string &, IDictionary::INotification *) = 0
+//  (1) virtual void Unregister(const string &, IDictionary::INotification *) = 0
+//  (2) virtual bool Get(const string &, const string &, string &) const = 0
+//  (3) virtual bool Set(const string &, const string &, const string &) = 0
+//  (4) virtual IDictionary::IIterator * Get(const string &) const = 0
 
 ProxyStub::MethodHandler DictionaryStubMethods[] = {
     // virtual void Register(const string &, IDictionary::INotification *) = 0
@@ -93,21 +93,9 @@ ProxyStub::MethodHandler DictionaryStubMethods[] = {
     [](Core::ProxyType<Core::IPCChannel> & channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage> & message) {
 
         RPC::Data::Input & input(message->Parameters());
-
-        // read parameters
         RPC::Data::Frame::Reader reader(input.Reader());
-        const string param0 = reader.Text();
-        const string param1 = reader.Text();
-        string param2 = reader.Text();
-
-        // call implementation
-        const IDictionary * implementation = input.Implementation<IDictionary>();
-        ASSERT((implementation != nullptr) && "Null IDictionary implementation pointer (IDictionary::Get() stub)");
-        const bool output = implementation->Get(param0, param1, param2);
-
-        // write return value
         RPC::Data::Frame::Writer writer(message->Response().Writer());
-        writer.Boolean(output);
+        // TODO
     },
 
     // virtual bool Set(const string &, const string &, const string &) = 0
@@ -159,7 +147,7 @@ ProxyStub::MethodHandler DictionaryStubMethods[] = {
 // IDictionary::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void Modified(const string &, const string &, const string &) = 0 
+//  (0) virtual void Modified(const string &, const string &, const string &) = 0
 
 ProxyStub::MethodHandler DictionaryNotificationStubMethods[] = {
     // virtual void Modified(const string &, const string &, const string &) = 0
@@ -187,11 +175,11 @@ ProxyStub::MethodHandler DictionaryNotificationStubMethods[] = {
 // IDictionary::IIterator interface stub definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool IsValid() const = 0 
-//  (2) virtual bool Next() = 0 
-//  (3) virtual const string Key() const = 0 
-//  (4) virtual const string Value() const = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool IsValid() const = 0
+//  (2) virtual bool Next() = 0
+//  (3) virtual const string Key() const = 0
+//  (4) virtual const string Value() const = 0
 
 ProxyStub::MethodHandler DictionaryIteratorStubMethods[] = {
     // virtual void Reset() = 0
@@ -282,11 +270,11 @@ ProxyStub::MethodHandler DictionaryIteratorStubMethods[] = {
 // IDictionary interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(const string &, IDictionary::INotification *) = 0 
-//  (1) virtual void Unregister(const string &, IDictionary::INotification *) = 0 
-//  (2) virtual bool Get(const string &, const string &, string &) const = 0 
-//  (3) virtual bool Set(const string &, const string &, const string &) = 0 
-//  (4) virtual IDictionary::IIterator * Get(const string &) const = 0 
+//  (0) virtual void Register(const string &, IDictionary::INotification *) = 0
+//  (1) virtual void Unregister(const string &, IDictionary::INotification *) = 0
+//  (2) virtual bool Get(const string &, const string &, string &) const = 0
+//  (3) virtual bool Set(const string &, const string &, const string &) = 0
+//  (4) virtual IDictionary::IIterator * Get(const string &) const = 0
 
 class DictionaryProxy final : public ProxyStub::UnknownProxyType<IDictionary> {
 public:
@@ -323,19 +311,13 @@ public:
     {
         IPCMessage newMessage(BaseClass::Message(2));
 
-        // write parameters
         RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-        writer.Text(param0);
-        writer.Text(param1);
-        writer.Text(param2);
+        // TODO
 
-        Invoke(newMessage);
-
-        // read return value
         RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-        const bool output = reader.Boolean();
+        // TODO
 
-        return output;
+        // return ...
     }
 
     bool Set(const string & param0, const string & param1, const string & param2) override
@@ -382,7 +364,7 @@ public:
 // IDictionary::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Modified(const string &, const string &, const string &) = 0 
+//  (0) virtual void Modified(const string &, const string &, const string &) = 0
 
 class DictionaryNotificationProxy final : public ProxyStub::UnknownProxyType<IDictionary::INotification> {
 public:
@@ -409,11 +391,11 @@ public:
 // IDictionary::IIterator interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool IsValid() const = 0 
-//  (2) virtual bool Next() = 0 
-//  (3) virtual const string Key() const = 0 
-//  (4) virtual const string Value() const = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool IsValid() const = 0
+//  (2) virtual bool Next() = 0
+//  (3) virtual const string Key() const = 0
+//  (4) virtual const string Value() const = 0
 
 class DictionaryIteratorProxy final : public ProxyStub::UnknownProxyType<IDictionary::IIterator> {
 public:

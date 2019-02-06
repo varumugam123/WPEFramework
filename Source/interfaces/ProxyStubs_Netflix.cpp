@@ -22,13 +22,13 @@ using namespace Exchange;
 // INetflix interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(INetflix::INotification *) = 0 
-//  (1) virtual void Unregister(INetflix::INotification *) = 0 
-//  (2) virtual string GetESN() const = 0 
-//  (3) virtual void FactoryReset() = 0 
-//  (4) virtual void SystemCommand(const string &) = 0 
-//  (5) virtual void Language(const string &) = 0 
-//  (6) virtual void SetVisible(bool) = 0 
+//  (0) virtual void Register(INetflix::INotification *) = 0
+//  (1) virtual void Unregister(INetflix::INotification *) = 0
+//  (2) virtual string GetESN() const = 0
+//  (3) virtual void FactoryReset() = 0
+//  (4) virtual void SystemCommand(const string &) = 0
+//  (5) virtual void Language(const string &) = 0
+//  (6) virtual void SetVisible(bool) = 0
 
 ProxyStub::MethodHandler NetflixStubMethods[] = {
     // virtual void Register(INetflix::INotification *) = 0
@@ -170,7 +170,7 @@ ProxyStub::MethodHandler NetflixStubMethods[] = {
 // INetflix::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void StateChange(const INetflix::state) = 0 
+//  (0) virtual void StateChange(const INetflix::state) = 0
 
 ProxyStub::MethodHandler NetflixNotificationStubMethods[] = {
     // virtual void StateChange(const INetflix::state) = 0
@@ -201,13 +201,13 @@ ProxyStub::MethodHandler NetflixNotificationStubMethods[] = {
 // INetflix interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(INetflix::INotification *) = 0 
-//  (1) virtual void Unregister(INetflix::INotification *) = 0 
-//  (2) virtual string GetESN() const = 0 
-//  (3) virtual void FactoryReset() = 0 
-//  (4) virtual void SystemCommand(const string &) = 0 
-//  (5) virtual void Language(const string &) = 0 
-//  (6) virtual void SetVisible(bool) = 0 
+//  (0) virtual void Register(INetflix::INotification *) = 0
+//  (1) virtual void Unregister(INetflix::INotification *) = 0
+//  (2) virtual string GetESN() const = 0
+//  (3) virtual void FactoryReset() = 0
+//  (4) virtual void SystemCommand(const string &) = 0
+//  (5) virtual void Language(const string &) = 0
+//  (6) virtual void SetVisible(bool) = 0
 
 class NetflixProxy final : public ProxyStub::UnknownProxyType<INetflix> {
 public:
@@ -296,7 +296,7 @@ public:
 // INetflix::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void StateChange(const INetflix::state) = 0 
+//  (0) virtual void StateChange(const INetflix::state) = 0
 
 class NetflixNotificationProxy final : public ProxyStub::UnknownProxyType<INetflix::INotification> {
 public:

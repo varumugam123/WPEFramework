@@ -21,8 +21,8 @@ using namespace Exchange;
 // IAVNClient interface stub definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (1) virtual void Launch(const string &) = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (1) virtual void Launch(const string &) = 0
 
 ProxyStub::MethodHandler AVNClientStubMethods[] = {
     // virtual uint32_t Configure(PluginHost::IShell *) = 0
@@ -85,8 +85,8 @@ ProxyStub::MethodHandler AVNClientStubMethods[] = {
 // IAVNClient interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (1) virtual void Launch(const string &) = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (1) virtual void Launch(const string &) = 0
 
 class AVNClientProxy final : public ProxyStub::UnknownProxyType<IAVNClient> {
 public:

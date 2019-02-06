@@ -23,12 +23,12 @@ using namespace Exchange;
 // IBrowser interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(IBrowser::INotification *) = 0 
-//  (1) virtual void Unregister(IBrowser::INotification *) = 0 
-//  (2) virtual void SetURL(const string &) = 0 
-//  (3) virtual string GetURL() const = 0 
-//  (4) virtual uint32_t GetFPS() const = 0 
-//  (5) virtual void Hide(const bool) = 0 
+//  (0) virtual void Register(IBrowser::INotification *) = 0
+//  (1) virtual void Unregister(const IBrowser::INotification *) = 0
+//  (2) virtual void SetURL(const string &) = 0
+//  (3) virtual string GetURL() const = 0
+//  (4) virtual uint32_t GetFPS() const = 0
+//  (5) virtual void Hide(const bool) = 0
 
 ProxyStub::MethodHandler BrowserStubMethods[] = {
     // virtual void Register(IBrowser::INotification *) = 0
@@ -59,7 +59,7 @@ ProxyStub::MethodHandler BrowserStubMethods[] = {
         }
     },
 
-    // virtual void Unregister(IBrowser::INotification *) = 0
+    // virtual void Unregister(const IBrowser::INotification *) = 0
     //
     [](Core::ProxyType<Core::IPCChannel> & channel, Core::ProxyType<RPC::InvokeMessage> & message) {
 
@@ -67,23 +67,18 @@ ProxyStub::MethodHandler BrowserStubMethods[] = {
 
         // read parameters
         RPC::Data::Frame::Reader reader(input.Reader());
-        IBrowser::INotification * param0 = reader.Number<IBrowser::INotification *>();
+        const IBrowser::INotification * param0 = reader.Number<IBrowser::INotification *>();
         ASSERT((param0 != nullptr) && "Null IBrowser interface pointer (IBrowser::Unregister() stub)");
-        IBrowser::INotification * param0_proxy = RPC::Administrator::Instance().CreateProxy<IBrowser::INotification>(channel, param0, true, false);
-        ASSERT((param0_proxy != nullptr) && "Failed to create IBrowser::INotification proxy (IBrowser::Unregister() stub)");
+        const IBrowser::INotification * param0_proxy = RPC::Administrator::Instance().FindProxy<IBrowser::INotification>(channel.operator->(), const_cast<IBrowser::INotification *>(param0));
 
         if (param0_proxy == nullptr) {
-            TRACE_L1("Failed to instantiate IBrowser::INotification proxy (IBrowser::Unregister() stub)");
+            TRACE_L1("Failed to find IBrowser::INotification proxy (IBrowser::Unregister() stub)");
             message->Response().Writer().Number<uint32_t>(Core::ERROR_RPC_CALL_FAILED);
         } else {
             // call implementation
             IBrowser * implementation = input.Implementation<IBrowser>();
             ASSERT((implementation != nullptr) && "Null IBrowser implementation pointer (IBrowser::Unregister() stub)");
             implementation->Unregister(param0_proxy);
-
-            if (param0_proxy->Release() != Core::ERROR_NONE) {
-                TRACE_L1("IBrowser::INotification::Release() failed (IBrowser::Unregister() stub)");
-            }
         }
     },
 
@@ -158,10 +153,10 @@ ProxyStub::MethodHandler BrowserStubMethods[] = {
 // IBrowser::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void LoadFinished(const string &) = 0 
-//  (1) virtual void URLChanged(const string &) = 0 
-//  (2) virtual void Hidden(const bool) = 0 
-//  (3) virtual void Closure() = 0 
+//  (0) virtual void LoadFinished(const string &) = 0
+//  (1) virtual void URLChanged(const string &) = 0
+//  (2) virtual void Hidden(const bool) = 0
+//  (3) virtual void Closure() = 0
 
 ProxyStub::MethodHandler BrowserNotificationStubMethods[] = {
     // virtual void LoadFinished(const string &) = 0
@@ -231,9 +226,9 @@ ProxyStub::MethodHandler BrowserNotificationStubMethods[] = {
 // IBrowser::IMetadata interface stub definitions
 //
 // Methods:
-//  (0) virtual string LocalCache() const = 0 
-//  (1) virtual string CookieStore() const = 0 
-//  (2) virtual void GarbageCollect() = 0 
+//  (0) virtual string LocalCache() const = 0
+//  (1) virtual string CookieStore() const = 0
+//  (2) virtual void GarbageCollect() = 0
 
 ProxyStub::MethodHandler BrowserMetadataStubMethods[] = {
     // virtual string LocalCache() const = 0
@@ -292,12 +287,12 @@ ProxyStub::MethodHandler BrowserMetadataStubMethods[] = {
 // IBrowser interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(IBrowser::INotification *) = 0 
-//  (1) virtual void Unregister(IBrowser::INotification *) = 0 
-//  (2) virtual void SetURL(const string &) = 0 
-//  (3) virtual string GetURL() const = 0 
-//  (4) virtual uint32_t GetFPS() const = 0 
-//  (5) virtual void Hide(const bool) = 0 
+//  (0) virtual void Register(IBrowser::INotification *) = 0
+//  (1) virtual void Unregister(const IBrowser::INotification *) = 0
+//  (2) virtual void SetURL(const string &) = 0
+//  (3) virtual string GetURL() const = 0
+//  (4) virtual uint32_t GetFPS() const = 0
+//  (5) virtual void Hide(const bool) = 0
 
 class BrowserProxy final : public ProxyStub::UnknownProxyType<IBrowser> {
 public:
@@ -317,13 +312,13 @@ public:
         Invoke(newMessage);
     }
 
-    void Unregister(IBrowser::INotification * param0) override
+    void Unregister(const IBrowser::INotification * param0) override
     {
         IPCMessage newMessage(BaseClass::Message(1));
 
         // write parameters
         RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-        writer.Number<IBrowser::INotification *>(param0);
+        writer.Number<const IBrowser::INotification *>(param0);
 
         Invoke(newMessage);
     }
@@ -381,10 +376,10 @@ public:
 // IBrowser::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void LoadFinished(const string &) = 0 
-//  (1) virtual void URLChanged(const string &) = 0 
-//  (2) virtual void Hidden(const bool) = 0 
-//  (3) virtual void Closure() = 0 
+//  (0) virtual void LoadFinished(const string &) = 0
+//  (1) virtual void URLChanged(const string &) = 0
+//  (2) virtual void Hidden(const bool) = 0
+//  (3) virtual void Closure() = 0
 
 class BrowserNotificationProxy final : public ProxyStub::UnknownProxyType<IBrowser::INotification> {
 public:
@@ -438,9 +433,9 @@ public:
 // IBrowser::IMetadata interface proxy definitions
 //
 // Methods:
-//  (0) virtual string LocalCache() const = 0 
-//  (1) virtual string CookieStore() const = 0 
-//  (2) virtual void GarbageCollect() = 0 
+//  (0) virtual string LocalCache() const = 0
+//  (1) virtual string CookieStore() const = 0
+//  (2) virtual void GarbageCollect() = 0
 
 class BrowserMetadataProxy final : public ProxyStub::UnknownProxyType<IBrowser::IMetadata> {
 public:

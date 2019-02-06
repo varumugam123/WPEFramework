@@ -21,7 +21,7 @@ using namespace Exchange;
 // IPlayGiga interface stub definitions
 //
 // Methods:
-//  (0) virtual void Launch(const string &, const string &) = 0 
+//  (0) virtual void Launch(const string &, const string &) = 0
 
 ProxyStub::MethodHandler PlayGigaStubMethods[] = {
     // virtual void Launch(const string &, const string &) = 0
@@ -53,7 +53,7 @@ ProxyStub::MethodHandler PlayGigaStubMethods[] = {
 // IPlayGiga interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Launch(const string &, const string &) = 0 
+//  (0) virtual void Launch(const string &, const string &) = 0
 
 class PlayGigaProxy final : public ProxyStub::UnknownProxyType<IPlayGiga> {
 public:

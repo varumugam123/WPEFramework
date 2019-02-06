@@ -23,8 +23,8 @@ using namespace Exchange;
 // ITestUtility interface stub definitions
 //
 // Methods:
-//  (0) virtual ITestUtility::ICommand::IIterator * Commands() const = 0 
-//  (1) virtual ITestUtility::ICommand * Command(const string &) const = 0 
+//  (0) virtual ITestUtility::ICommand::IIterator * Commands() const = 0
+//  (1) virtual ITestUtility::ICommand * Command(const string &) const = 0
 
 ProxyStub::MethodHandler TestUtilityStubMethods[] = {
     // virtual ITestUtility::ICommand::IIterator * Commands() const = 0
@@ -70,10 +70,10 @@ ProxyStub::MethodHandler TestUtilityStubMethods[] = {
 // ITestUtility::ICommand interface stub definitions
 //
 // Methods:
-//  (0) virtual string Execute(const string &) = 0 
-//  (1) virtual string Description() const = 0 
-//  (2) virtual string Signature() const = 0 
-//  (3) virtual string Name() const = 0 
+//  (0) virtual string Execute(const string &) = 0
+//  (1) virtual string Description() const = 0
+//  (2) virtual string Signature() const = 0
+//  (3) virtual string Name() const = 0
 
 ProxyStub::MethodHandler TestUtilityCommandStubMethods[] = {
     // virtual string Execute(const string &) = 0
@@ -151,10 +151,10 @@ ProxyStub::MethodHandler TestUtilityCommandStubMethods[] = {
 // ITestUtility::ICommand::IIterator interface stub definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool IsValid() const = 0 
-//  (2) virtual bool Next() = 0 
-//  (3) virtual ITestUtility::ICommand * Command() const = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool IsValid() const = 0
+//  (2) virtual bool Next() = 0
+//  (3) virtual ITestUtility::ICommand * Command() const = 0
 
 ProxyStub::MethodHandler TestUtilityCommandIteratorStubMethods[] = {
     // virtual void Reset() = 0
@@ -229,8 +229,8 @@ ProxyStub::MethodHandler TestUtilityCommandIteratorStubMethods[] = {
 // ITestUtility interface proxy definitions
 //
 // Methods:
-//  (0) virtual ITestUtility::ICommand::IIterator * Commands() const = 0 
-//  (1) virtual ITestUtility::ICommand * Command(const string &) const = 0 
+//  (0) virtual ITestUtility::ICommand::IIterator * Commands() const = 0
+//  (1) virtual ITestUtility::ICommand * Command(const string &) const = 0
 
 class TestUtilityProxy final : public ProxyStub::UnknownProxyType<ITestUtility> {
 public:
@@ -280,10 +280,10 @@ public:
 // ITestUtility::ICommand interface proxy definitions
 //
 // Methods:
-//  (0) virtual string Execute(const string &) = 0 
-//  (1) virtual string Description() const = 0 
-//  (2) virtual string Signature() const = 0 
-//  (3) virtual string Name() const = 0 
+//  (0) virtual string Execute(const string &) = 0
+//  (1) virtual string Description() const = 0
+//  (2) virtual string Signature() const = 0
+//  (3) virtual string Name() const = 0
 
 class TestUtilityCommandProxy final : public ProxyStub::UnknownProxyType<ITestUtility::ICommand> {
 public:
@@ -353,10 +353,10 @@ public:
 // ITestUtility::ICommand::IIterator interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Reset() = 0 
-//  (1) virtual bool IsValid() const = 0 
-//  (2) virtual bool Next() = 0 
-//  (3) virtual ITestUtility::ICommand * Command() const = 0 
+//  (0) virtual void Reset() = 0
+//  (1) virtual bool IsValid() const = 0
+//  (2) virtual bool Next() = 0
+//  (3) virtual ITestUtility::ICommand * Command() const = 0
 
 class TestUtilityCommandIteratorProxy final : public ProxyStub::UnknownProxyType<ITestUtility::ICommand::IIterator> {
 public:

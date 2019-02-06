@@ -22,19 +22,19 @@ using namespace Exchange;
 // IGuide interface stub definitions
 //
 // Methods:
-//  (0) virtual uint32_t StartParser(PluginHost::IShell *) = 0 
-//  (1) virtual const string GetChannels() = 0 
-//  (2) virtual const string GetPrograms() = 0 
-//  (3) virtual const string GetCurrentProgram(const string &) = 0 
-//  (4) virtual const string GetAudioLanguages(const uint32_t) = 0 
-//  (5) virtual const string GetSubtitleLanguages(const uint32_t) = 0 
-//  (6) virtual bool SetParentalControlPin(const string &, const string &) = 0 
-//  (7) virtual bool SetParentalControl(const string &, const bool) = 0 
-//  (8) virtual bool IsParentalControlled() = 0 
-//  (9) virtual bool SetParentalLock(const string &, const bool, const string &) = 0 
-//  (10) virtual bool IsParentalLocked(const string &) = 0 
-//  (11) virtual void Register(IGuide::INotification *) = 0 
-//  (12) virtual void Unregister(IGuide::INotification *) = 0 
+//  (0) virtual uint32_t StartParser(PluginHost::IShell *) = 0
+//  (1) virtual const string GetChannels() = 0
+//  (2) virtual const string GetPrograms() = 0
+//  (3) virtual const string GetCurrentProgram(const string &) = 0
+//  (4) virtual const string GetAudioLanguages(const uint32_t) = 0
+//  (5) virtual const string GetSubtitleLanguages(const uint32_t) = 0
+//  (6) virtual bool SetParentalControlPin(const string &, const string &) = 0
+//  (7) virtual bool SetParentalControl(const string &, const bool) = 0
+//  (8) virtual bool IsParentalControlled() = 0
+//  (9) virtual bool SetParentalLock(const string &, const bool, const string &) = 0
+//  (10) virtual bool IsParentalLocked(const string &) = 0
+//  (11) virtual void Register(IGuide::INotification *) = 0
+//  (12) virtual void Unregister(IGuide::INotification *) = 0
 
 ProxyStub::MethodHandler GuideStubMethods[] = {
     // virtual uint32_t StartParser(PluginHost::IShell *) = 0
@@ -324,11 +324,11 @@ ProxyStub::MethodHandler GuideStubMethods[] = {
 // IGuide::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void EITBroadcast() = 0 
-//  (1) virtual void EmergencyAlert() = 0 
-//  (2) virtual void ParentalControlChanged() = 0 
-//  (3) virtual void ParentalLockChanged(const string &) = 0 
-//  (4) virtual void TestNotification(const string &) = 0 
+//  (0) virtual void EITBroadcast() = 0
+//  (1) virtual void EmergencyAlert() = 0
+//  (2) virtual void ParentalControlChanged() = 0
+//  (3) virtual void ParentalLockChanged(const string &) = 0
+//  (4) virtual void TestNotification(const string &) = 0
 
 ProxyStub::MethodHandler GuideNotificationStubMethods[] = {
     // virtual void EITBroadcast() = 0
@@ -411,19 +411,19 @@ ProxyStub::MethodHandler GuideNotificationStubMethods[] = {
 // IGuide interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint32_t StartParser(PluginHost::IShell *) = 0 
-//  (1) virtual const string GetChannels() = 0 
-//  (2) virtual const string GetPrograms() = 0 
-//  (3) virtual const string GetCurrentProgram(const string &) = 0 
-//  (4) virtual const string GetAudioLanguages(const uint32_t) = 0 
-//  (5) virtual const string GetSubtitleLanguages(const uint32_t) = 0 
-//  (6) virtual bool SetParentalControlPin(const string &, const string &) = 0 
-//  (7) virtual bool SetParentalControl(const string &, const bool) = 0 
-//  (8) virtual bool IsParentalControlled() = 0 
-//  (9) virtual bool SetParentalLock(const string &, const bool, const string &) = 0 
-//  (10) virtual bool IsParentalLocked(const string &) = 0 
-//  (11) virtual void Register(IGuide::INotification *) = 0 
-//  (12) virtual void Unregister(IGuide::INotification *) = 0 
+//  (0) virtual uint32_t StartParser(PluginHost::IShell *) = 0
+//  (1) virtual const string GetChannels() = 0
+//  (2) virtual const string GetPrograms() = 0
+//  (3) virtual const string GetCurrentProgram(const string &) = 0
+//  (4) virtual const string GetAudioLanguages(const uint32_t) = 0
+//  (5) virtual const string GetSubtitleLanguages(const uint32_t) = 0
+//  (6) virtual bool SetParentalControlPin(const string &, const string &) = 0
+//  (7) virtual bool SetParentalControl(const string &, const bool) = 0
+//  (8) virtual bool IsParentalControlled() = 0
+//  (9) virtual bool SetParentalLock(const string &, const bool, const string &) = 0
+//  (10) virtual bool IsParentalLocked(const string &) = 0
+//  (11) virtual void Register(IGuide::INotification *) = 0
+//  (12) virtual void Unregister(IGuide::INotification *) = 0
 
 class GuideProxy final : public ProxyStub::UnknownProxyType<IGuide> {
 public:
@@ -638,11 +638,11 @@ public:
 // IGuide::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void EITBroadcast() = 0 
-//  (1) virtual void EmergencyAlert() = 0 
-//  (2) virtual void ParentalControlChanged() = 0 
-//  (3) virtual void ParentalLockChanged(const string &) = 0 
-//  (4) virtual void TestNotification(const string &) = 0 
+//  (0) virtual void EITBroadcast() = 0
+//  (1) virtual void EmergencyAlert() = 0
+//  (2) virtual void ParentalControlChanged() = 0
+//  (3) virtual void ParentalLockChanged(const string &) = 0
+//  (4) virtual void TestNotification(const string &) = 0
 
 class GuideNotificationProxy final : public ProxyStub::UnknownProxyType<IGuide::INotification> {
 public:

@@ -22,12 +22,12 @@ using namespace Exchange;
 // IPower interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(IPower::INotification *) = 0 
-//  (1) virtual void Unregister(IPower::INotification *) = 0 
-//  (2) virtual IPower::PCState GetState() const = 0 
-//  (3) virtual IPower::PCStatus SetState(const IPower::PCState, const uint32_t) = 0 
-//  (4) virtual void PowerKey() = 0 
-//  (5) virtual void Configure(const string &) = 0 
+//  (0) virtual void Register(IPower::INotification *) = 0
+//  (1) virtual void Unregister(IPower::INotification *) = 0
+//  (2) virtual IPower::PCState GetState() const = 0
+//  (3) virtual IPower::PCStatus SetState(const IPower::PCState, const uint32_t) = 0
+//  (4) virtual void PowerKey() = 0
+//  (5) virtual void Configure(const string &) = 0
 
 ProxyStub::MethodHandler PowerStubMethods[] = {
     // virtual void Register(IPower::INotification *) = 0
@@ -158,7 +158,7 @@ ProxyStub::MethodHandler PowerStubMethods[] = {
 // IPower::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void StateChange(const IPower::PCState) = 0 
+//  (0) virtual void StateChange(const IPower::PCState) = 0
 
 ProxyStub::MethodHandler PowerNotificationStubMethods[] = {
     // virtual void StateChange(const IPower::PCState) = 0
@@ -189,12 +189,12 @@ ProxyStub::MethodHandler PowerNotificationStubMethods[] = {
 // IPower interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(IPower::INotification *) = 0 
-//  (1) virtual void Unregister(IPower::INotification *) = 0 
-//  (2) virtual IPower::PCState GetState() const = 0 
-//  (3) virtual IPower::PCStatus SetState(const IPower::PCState, const uint32_t) = 0 
-//  (4) virtual void PowerKey() = 0 
-//  (5) virtual void Configure(const string &) = 0 
+//  (0) virtual void Register(IPower::INotification *) = 0
+//  (1) virtual void Unregister(IPower::INotification *) = 0
+//  (2) virtual IPower::PCState GetState() const = 0
+//  (3) virtual IPower::PCStatus SetState(const IPower::PCState, const uint32_t) = 0
+//  (4) virtual void PowerKey() = 0
+//  (5) virtual void Configure(const string &) = 0
 
 class PowerProxy final : public ProxyStub::UnknownProxyType<IPower> {
 public:
@@ -279,7 +279,7 @@ public:
 // IPower::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void StateChange(const IPower::PCState) = 0 
+//  (0) virtual void StateChange(const IPower::PCState) = 0
 
 class PowerNotificationProxy final : public ProxyStub::UnknownProxyType<IPower::INotification> {
 public:

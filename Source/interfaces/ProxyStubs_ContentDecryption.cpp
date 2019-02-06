@@ -21,11 +21,11 @@ using namespace Exchange;
 // IContentDecryption interface stub definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (1) virtual uint32_t Reset() = 0 
-//  (2) virtual RPC::IStringIterator * Systems() const = 0 
-//  (3) virtual RPC::IStringIterator * Designators(const string &) const = 0 
-//  (4) virtual RPC::IStringIterator * Sessions(const string &) const = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (1) virtual uint32_t Reset() = 0
+//  (2) virtual RPC::IStringIterator * Systems() const = 0
+//  (3) virtual RPC::IStringIterator * Designators(const string &) const = 0
+//  (4) virtual RPC::IStringIterator * Sessions(const string &) const = 0
 
 ProxyStub::MethodHandler ContentDecryptionStubMethods[] = {
     // virtual uint32_t Configure(PluginHost::IShell *) = 0
@@ -144,11 +144,11 @@ ProxyStub::MethodHandler ContentDecryptionStubMethods[] = {
 // IContentDecryption interface proxy definitions
 //
 // Methods:
-//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (1) virtual uint32_t Reset() = 0 
-//  (2) virtual RPC::IStringIterator * Systems() const = 0 
-//  (3) virtual RPC::IStringIterator * Designators(const string &) const = 0 
-//  (4) virtual RPC::IStringIterator * Sessions(const string &) const = 0 
+//  (0) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (1) virtual uint32_t Reset() = 0
+//  (2) virtual RPC::IStringIterator * Systems() const = 0
+//  (3) virtual RPC::IStringIterator * Designators(const string &) const = 0
+//  (4) virtual RPC::IStringIterator * Sessions(const string &) const = 0
 
 class ContentDecryptionProxy final : public ProxyStub::UnknownProxyType<IContentDecryption> {
 public:

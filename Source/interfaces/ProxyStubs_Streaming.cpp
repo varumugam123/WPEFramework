@@ -22,15 +22,15 @@ using namespace Exchange;
 // IStreaming interface stub definitions
 //
 // Methods:
-//  (0) virtual void Register(IStreaming::INotification *) = 0 
-//  (1) virtual void Unregister(IStreaming::INotification *) = 0 
-//  (2) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (3) virtual void StartScan() = 0 
-//  (4) virtual void StopScan() = 0 
-//  (5) virtual void SetCurrentChannel(const string &) = 0 
-//  (6) virtual const string GetCurrentChannel() = 0 
-//  (7) virtual bool IsScanning() = 0 
-//  (8) virtual void Test(const string &) = 0 
+//  (0) virtual void Register(IStreaming::INotification *) = 0
+//  (1) virtual void Unregister(IStreaming::INotification *) = 0
+//  (2) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (3) virtual void StartScan() = 0
+//  (4) virtual void StopScan() = 0
+//  (5) virtual void SetCurrentChannel(const string &) = 0
+//  (6) virtual const string GetCurrentChannel() = 0
+//  (7) virtual bool IsScanning() = 0
+//  (8) virtual void Test(const string &) = 0
 
 ProxyStub::MethodHandler StreamingStubMethods[] = {
     // virtual void Register(IStreaming::INotification *) = 0
@@ -216,9 +216,9 @@ ProxyStub::MethodHandler StreamingStubMethods[] = {
 // IStreaming::INotification interface stub definitions
 //
 // Methods:
-//  (0) virtual void ScanningStateChanged(const uint32_t) = 0 
-//  (1) virtual void CurrentChannelChanged(const string &) = 0 
-//  (2) virtual void TestNotification(const string &) = 0 
+//  (0) virtual void ScanningStateChanged(const uint32_t) = 0
+//  (1) virtual void CurrentChannelChanged(const string &) = 0
+//  (2) virtual void TestNotification(const string &) = 0
 
 ProxyStub::MethodHandler StreamingNotificationStubMethods[] = {
     // virtual void ScanningStateChanged(const uint32_t) = 0
@@ -281,15 +281,15 @@ ProxyStub::MethodHandler StreamingNotificationStubMethods[] = {
 // IStreaming interface proxy definitions
 //
 // Methods:
-//  (0) virtual void Register(IStreaming::INotification *) = 0 
-//  (1) virtual void Unregister(IStreaming::INotification *) = 0 
-//  (2) virtual uint32_t Configure(PluginHost::IShell *) = 0 
-//  (3) virtual void StartScan() = 0 
-//  (4) virtual void StopScan() = 0 
-//  (5) virtual void SetCurrentChannel(const string &) = 0 
-//  (6) virtual const string GetCurrentChannel() = 0 
-//  (7) virtual bool IsScanning() = 0 
-//  (8) virtual void Test(const string &) = 0 
+//  (0) virtual void Register(IStreaming::INotification *) = 0
+//  (1) virtual void Unregister(IStreaming::INotification *) = 0
+//  (2) virtual uint32_t Configure(PluginHost::IShell *) = 0
+//  (3) virtual void StartScan() = 0
+//  (4) virtual void StopScan() = 0
+//  (5) virtual void SetCurrentChannel(const string &) = 0
+//  (6) virtual const string GetCurrentChannel() = 0
+//  (7) virtual bool IsScanning() = 0
+//  (8) virtual void Test(const string &) = 0
 
 class StreamingProxy final : public ProxyStub::UnknownProxyType<IStreaming> {
 public:
@@ -404,9 +404,9 @@ public:
 // IStreaming::INotification interface proxy definitions
 //
 // Methods:
-//  (0) virtual void ScanningStateChanged(const uint32_t) = 0 
-//  (1) virtual void CurrentChannelChanged(const string &) = 0 
-//  (2) virtual void TestNotification(const string &) = 0 
+//  (0) virtual void ScanningStateChanged(const uint32_t) = 0
+//  (1) virtual void CurrentChannelChanged(const string &) = 0
+//  (2) virtual void TestNotification(const string &) = 0
 
 class StreamingNotificationProxy final : public ProxyStub::UnknownProxyType<IStreaming::INotification> {
 public:
