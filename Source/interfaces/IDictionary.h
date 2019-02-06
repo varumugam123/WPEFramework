@@ -43,6 +43,7 @@ namespace Exchange {
         virtual void Unregister(const string& nameSpace, struct IDictionary::INotification* sink) = 0;
 
         // Getters and Setters for the dictionary.
+        // @stubgen:stub
         virtual bool Get(const string& nameSpace, const string& key, string& value) const = 0;
         virtual bool Set(const string& nameSpace, const string& key, const string& value) = 0;
 		virtual IIterator* Get(const string& nameSpace) const = 0;

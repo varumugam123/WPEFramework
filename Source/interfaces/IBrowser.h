@@ -36,7 +36,7 @@ namespace Exchange {
         virtual ~IBrowser() {}
 
         virtual void Register(IBrowser::INotification* sink) = 0;
-        virtual void Unregister(IBrowser::INotification* sink) = 0;
+        virtual void Unregister(const IBrowser::INotification* sink) = 0;
 
         // Change the currenly displayed URL by the browser.
         virtual void SetURL(const string& URL) = 0;
