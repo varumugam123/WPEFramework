@@ -11,6 +11,9 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
 
     virtual ~IProxyStubsValidator(){};
 
+    // ****************************************************************************************************************
+    // enums, structures, interfaces
+    // ****************************************************************************************************************
     enum Enum {
         ENUM_VALUE_1 = 0,
         ENUM_VALUE_2
@@ -31,6 +34,16 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     struct Structure {
         int32_t field1;
         int64_t field2;
+    };
+
+    struct IInterface : virtual public Core::IUnknown {
+        // ToDo: set proper ID value
+        enum { ID = 0x00000082 };
+        virtual ~IInterface() {}
+
+        virtual uint8_t Increment() = 0;
+        virtual uint8_t Decrement() = 0;
+        virtual uint8_t Value() const = 0;
     };
 
     // ****************************************************************************************************************
@@ -304,12 +317,22 @@ struct IProxyStubsValidator : virtual public Core::IUnknown {
     virtual bool passByConstReferenceBool(const bool& v1) = 0;
     virtual bool passByConstReferenceStructure(const Structure& v1) = 0;
 
-    // ToDo:
-    //      - nesting
-    //      - pass by pointer
-    //      - pass by const pointer
-    //      - pass by const pointer const
-    //      -
+    // ****************************************************************************************************************
+    // pointer to interface
+    // ****************************************************************************************************************
+    virtual IInterface* returnByPointer() = 0;
+    // ToDo: remove when stubgen:stub when Proxy/Stub generator will be fixed
+    // @stubgen:stub
+    virtual const IInterface* returnByConstPointer() = 0;
+    // @stubgen:stub
+    virtual const IInterface * const returnByConstPointerConst() = 0;
+    virtual IInterface * const returnByPointerConst() = 0;
+
+    virtual bool passByPointer(IInterface* interface) = 0;
+    virtual bool passByConstPointer(const IInterface* interface) = 0;
+    virtual bool passByConstPointerConst(const IInterface* const interface) = 0;
+    virtual bool passByPointerConst(IInterface* const interface) = 0;
+
 };
 
 } // namespace Exchange
