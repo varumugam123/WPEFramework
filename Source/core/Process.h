@@ -526,6 +526,7 @@ namespace Core {
                         dup2(stderrfd[1], 2);
                     }
                     /* fork a child process           */
+                    setpgid(getpid(), getpid()); // Change pgid of the child to self
                     if (execvp(*actualParameters, actualParameters) < 0) {
                         // TRACE_L1("Failed to start process: %s.", explain_execvp(*actualParameters, actualParameters));
                         int result = errno;
@@ -549,7 +550,7 @@ namespace Core {
                         _stderr = stderrfd[0];
                     }
                 }
-				_PID = *pid;
+                _PID = *pid;
                 if (_stdin == 0) {
                     //* check descriptors if they need to be closed
                     if (stdinfd[0] != -1) {
@@ -578,7 +579,7 @@ namespace Core {
                 TerminateProcess(_info.hProcess, 1234);
             }
 #else
-            ::kill(_PID, (hardKill ? SIGKILL : SIGTERM));
+            ::kill(-(_PID), (hardKill ? SIGKILL : SIGTERM));
 #endif
         }
 
