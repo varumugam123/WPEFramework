@@ -12,7 +12,7 @@ namespace PluginHost {
         : virtual public Core::IUnknown {
 
         enum {
-            ID = 0x0000002A
+            ID = ID_STATECONTROL
         };
 
         enum command {
@@ -30,7 +30,7 @@ namespace PluginHost {
         struct INotification
             : virtual public Core::IUnknown {
             enum {
-                ID = 0x0000002B
+                ID = ID_STATECONTROL_NOTIFICATION
             };
 
             virtual ~INotification()

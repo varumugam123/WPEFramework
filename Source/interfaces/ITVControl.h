@@ -9,7 +9,7 @@ namespace WPEFramework {
 namespace Exchange {
 
     struct IStream : virtual public Core::IUnknown {
-        enum { ID = 0x00000016 };
+        enum { ID = ID_STREAM };
 
         enum state {
             NotAvailable = 0,
@@ -31,10 +31,10 @@ namespace Exchange {
         };
 
         struct IControl : virtual public Core::IUnknown {
-            enum { ID = 0x00000018 };
+            enum { ID = ID_CONTROL };
 
             struct IGeometry : virtual public Core::IUnknown {
-                enum { ID = 0x00000019 };
+                enum { ID = ID_CONTROL_GEOMETRY };
 
                 virtual ~IGeometry() {}
 
@@ -46,7 +46,7 @@ namespace Exchange {
             };
 
             struct ICallback : virtual public Core::IUnknown {
-                enum { ID = 0x0000001A };
+                enum { ID = ID_CONTROL_CALLBACK };
 
                 virtual ~ICallback() {}
 
@@ -66,7 +66,7 @@ namespace Exchange {
         };
 
         struct ICallback : virtual public Core::IUnknown  {
-            enum { ID = 0x00000017 };
+            enum { ID = ID_CALLBACK };
 
             virtual ~ICallback() {}
 
@@ -86,7 +86,7 @@ namespace Exchange {
     };
 
     struct IPlayer : virtual public Core::IUnknown {
-        enum { ID = 0x00000015 };
+        enum { ID = ID_PLAYER };
 
         virtual ~IPlayer() {}
         virtual IStream* CreateStream(IStream::streamtype streamType) = 0;

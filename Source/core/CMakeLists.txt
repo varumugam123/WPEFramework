@@ -60,6 +60,7 @@ set(PUBLIC_HEADERS
         FileSystem.h
         Frame.h
         IAction.h
+        Ids.h
         IIterator.h
         IObserver.h
         IPCChannel.h

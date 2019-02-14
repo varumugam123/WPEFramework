@@ -353,6 +353,7 @@ inline void SleepS(unsigned int a_Time)
 #endif
 
 #include "Config.h"
+#include "Ids.h"
 
 typedef DEPRECATED unsigned char uint8;
 typedef DEPRECATED unsigned short uint16;
@@ -567,7 +568,7 @@ namespace Core {
 	};
 
     struct EXTERNAL IUnknown {
-        enum { ID = 0x00000000 };
+        enum { ID = ID_UNKNOWN };
 
         virtual ~IUnknown(){};
 

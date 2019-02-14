@@ -9,7 +9,7 @@
 namespace WPEFramework {
 namespace Trace {
     struct ITraceIterator : virtual public Core::IUnknown {
-        enum { ID = 0x00000003 };
+        enum { ID = ID_TRACEITERATOR };
 
         virtual ~ITraceIterator(){};
 
@@ -18,7 +18,7 @@ namespace Trace {
     };
 
     struct ITraceController : virtual public Core::IUnknown {
-        enum { ID = 0x00000004 };
+        enum { ID = ID_TRACECONTROLLER };
 
         virtual ~ITraceController(){};
 
