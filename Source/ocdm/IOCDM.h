@@ -81,11 +81,11 @@ namespace OCDM {
 
     struct IAccessorOCDM : virtual public WPEFramework::Core::IUnknown {
 
-        enum { ID = ID_ACCESSOR_OCDM };
+        enum { ID = ID_ACCESSOROCDM };
 
         struct INotification : virtual public WPEFramework::Core::IUnknown {
 
-            enum { ID = ID_ACCESSOR_OCDM_NOTIFICATION };
+            enum { ID = ID_ACCESSOROCDM_NOTIFICATION };
 
             virtual ~INotification () {}
 
