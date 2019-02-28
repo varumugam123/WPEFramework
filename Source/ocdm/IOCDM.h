@@ -122,7 +122,7 @@ namespace OCDM {
 
         virtual OCDM_RESULT CancelChallengeDataNetflix() = 0;
 
-        virtual OCDM_RESULT StoreLicenseData(const uint8_t licenseData[], uint32_t licenseDataSize, unsigned char * secureStopId) = 0;
+        virtual OCDM_RESULT StoreLicenseData(const uint8_t licenseData[], uint32_t licenseDataSize, uint8_t * secureStopId) = 0;
 
         virtual OCDM_RESULT InitDecryptContextByKid() = 0;
 
@@ -200,13 +200,29 @@ namespace OCDM {
 
         virtual uint32_t GetLdlSessionLimit(const std::string & keySystem) const = 0;
 
+        virtual bool IsSecureStopEnabled(const std::string & keySystem) = 0;
+
         virtual OCDM_RESULT EnableSecureStop(const std::string & keySystem, bool enable) = 0;
+
+        virtual uint32_t ResetSecureStops(const std::string & keySystem) = 0;
+
+        virtual OCDM_RESULT GetSecureStopIds(
+                const std::string & keySystem,
+                uint8_t * ids[],
+                uint32_t & count) = 0;
+
+        virtual OCDM_RESULT GetSecureStop(
+                const std::string & keySystem,
+                const uint8_t sessionID[],
+                uint32_t sessionIDLength,
+                uint8_t * rawData,
+                uint16_t & rawSize) = 0;
 
         virtual OCDM_RESULT CommitSecureStop(
                 const std::string & keySystem,
-                const unsigned char sessionID[],
+                const uint8_t sessionID[],
                 uint32_t sessionIDLength,
-                const unsigned char serverResponse[],
+                const uint8_t serverResponse[],
                 uint32_t serverResponseLength) = 0;
 
         // TODO: rename to something like "SetStoreDirs"
@@ -216,7 +232,14 @@ namespace OCDM {
 
         virtual OCDM_RESULT TeardownSystemNetflix(const std::string & keySystem) = 0;
 
+        virtual OCDM_RESULT DeleteKeyStore(const std::string & keySystem) = 0;
+
         virtual OCDM_RESULT DeleteSecureStore(const std::string & keySystem) = 0;
+
+        virtual OCDM_RESULT GetKeyStoreHash(
+                const std::string & keySystem,
+                uint8_t keyStoreHash[],
+                uint32_t keyStoreHashLength) = 0;
 
         virtual OCDM_RESULT GetSecureStoreHash(
                 const std::string & keySystem,
