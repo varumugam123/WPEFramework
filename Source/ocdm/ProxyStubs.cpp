@@ -14,7 +14,7 @@ namespace WPEFramework {
     ProxyStub::MethodHandler AccesorOCDMStubMethods[] = {
         [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             //
-            // virtual OCDM_RESULT IsTypeSupported(
+            // virtual bool IsTypeSupported(
             //     const std::string keySystem,
             //     const std::string mimeType) = 0;
             //
@@ -24,7 +24,7 @@ namespace WPEFramework {
             std::string keySystem = parameters.Text();
             std::string mimeType = parameters.Text();
 
-            response.Number(message->Parameters().Implementation<OCDM::IAccessorOCDM>()->IsTypeSupported(keySystem, mimeType));
+            response.Boolean(message->Parameters().Implementation<OCDM::IAccessorOCDM>()->IsTypeSupported(keySystem, mimeType));
         },
         [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             //
@@ -350,7 +350,6 @@ namespace WPEFramework {
             parameters.UnlockBuffer(rawSize);
             rawSize = parameters.Number<uint16_t>();
             uint8_t* rawData = const_cast<uint8_t*>(buffer);
-            uint16_t passedRawSize = rawSize;
 
             OCDM::IAccessorOCDMExt* accessor =  message->Parameters().Implementation<OCDM::IAccessorOCDMExt>();
             OCDM::OCDM_RESULT result = accessor->GetSecureStop(keySystem, sessionID, sessionIDLength, rawData, rawSize);
@@ -771,63 +770,6 @@ namespace WPEFramework {
         },
         [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
             //
-            // virtual std::string GetContentIdExt() const = 0;
-            //
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-
-            response.Text(message->Parameters().Implementation<OCDM::ISessionExt>()->GetContentIdExt());
-        },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
-            //
-            // virtual void SetContentIdExt(const std::string & contentId) = 0;
-            //
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-
-            std::string contentId = parameters.Text();
-            message->Parameters().Implementation<OCDM::ISessionExt>()->SetContentIdExt(contentId);
-        },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
-            //
-            // virtual LicenseTypeExt GetLicenseTypeExt() const = 0;
-            //
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-
-            response.Number(message->Parameters().Implementation<OCDM::ISessionExt>()->GetLicenseTypeExt());
-        },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
-            //
-            // virtual void SetLicenseTypeExt(LicenseTypeExt licenseType) = 0;
-            //
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-
-            OCDM::ISessionExt::LicenseTypeExt licenseType = parameters.Number<OCDM::ISessionExt::LicenseTypeExt>();
-            message->Parameters().Implementation<OCDM::ISessionExt>()->SetLicenseTypeExt(licenseType);
-        },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
-            //
-            // virtual SessionStateExt GetSessionStateExt() const = 0;
-            //
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-
-            response.Number(message->Parameters().Implementation<OCDM::ISessionExt>()->GetSessionStateExt());
-        },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
-            //
-            // virtual void SetSessionStateExt(SessionStateExt sessionState) = 0;
-            //
-            RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
-            RPC::Data::Frame::Writer response(message->Response().Writer());
-
-            OCDM::ISessionExt::SessionStateExt sessionState = parameters.Number<OCDM::ISessionExt::SessionStateExt>();
-            message->Parameters().Implementation<OCDM::ISessionExt>()->SetSessionStateExt(sessionState);
-        },
-        [](Core::ProxyType<Core::IPCChannel>& channel VARIABLE_IS_NOT_USED, Core::ProxyType<RPC::InvokeMessage>& message) {
-            //
             // virtual OCDM_RESULT SetDrmHeader(const char drmHeader[], uint32_t drmHeaderLength) = 0;
             //
             RPC::Data::Frame::Reader parameters(message->Parameters().Reader());
@@ -858,16 +800,7 @@ namespace WPEFramework {
 
             OCDM::OCDM_RESULT result = message->Parameters().Implementation<OCDM::ISessionExt>()->GetChallengeDataNetflix(challenge, challengeSize, isLDL);
 
-            // TODO: do we need this if/else
-            // TODO: use return code ("result") instead?
-            if (orgChallengeSize == 0) {
-                // First run, just getting the buffer size.
-                response.Buffer(0, nullptr);
-            } else {
-                // Second run, interested in actual buffer.
-                response.Buffer(challengeSize, challenge);
-            }
-
+            response.Buffer(challengeSize, challenge);
             response.Number(challengeSize);
             response.Number(result);
         },
@@ -951,7 +884,7 @@ namespace WPEFramework {
         }
 
     public:
-        virtual OCDM::OCDM_RESULT IsTypeSupported(
+        virtual bool IsTypeSupported(
             const std::string keySystem,
             const std::string mimeType) const override {
 
@@ -964,7 +897,7 @@ namespace WPEFramework {
 
             RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
 
-            return (reader.Number<OCDM::OCDM_RESULT>());
+            return (reader.Boolean());
         } 
         virtual OCDM::ISession* Session (
             const std::string sessionId) {
@@ -1654,66 +1587,8 @@ namespace WPEFramework {
             return (reader.Number<uint16_t>());
         }
 
-        virtual std::string GetContentIdExt() const override {
-
-            IPCMessage newMessage(BaseClass::Message(7));
-
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-
-            return (reader.Text());
-        }
-
-        virtual void SetContentIdExt(const std::string & contentId) override {
-
-            IPCMessage newMessage(BaseClass::Message(8));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-            writer.Text(contentId);
-
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-        }
-
-        virtual LicenseTypeExt GetLicenseTypeExt() const override {
-            IPCMessage newMessage(BaseClass::Message(9));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Number<LicenseTypeExt>();
-        }
-
-        virtual void SetLicenseTypeExt(LicenseTypeExt licenseType) override {
-            IPCMessage newMessage(BaseClass::Message(10));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-            writer.Number(licenseType);
-
-            Invoke(newMessage);
-        }
-
-        virtual SessionStateExt GetSessionStateExt() const override {
-            IPCMessage newMessage(BaseClass::Message(11));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-
-            Invoke(newMessage);
-
-            RPC::Data::Frame::Reader reader(newMessage->Response().Reader());
-            return reader.Number<SessionStateExt>();
-        }
-
-        virtual void SetSessionStateExt(SessionStateExt sessionState) override {
-            IPCMessage newMessage(BaseClass::Message(12));
-            RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
-            writer.Number(sessionState);
-
-            Invoke(newMessage);
-        }
-
         virtual OCDM::OCDM_RESULT SetDrmHeader(const uint8_t drmHeader[], uint32_t drmHeaderLength) override {
-            IPCMessage newMessage(BaseClass::Message(13));
+            IPCMessage newMessage(BaseClass::Message(7));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
 
             writer.Buffer(drmHeaderLength, drmHeader);
@@ -1726,7 +1601,7 @@ namespace WPEFramework {
         }
 
         virtual OCDM::OCDM_RESULT GetChallengeDataNetflix(uint8_t * challenge, uint32_t & challengeSize, uint32_t isLDL) override {
-            IPCMessage newMessage(BaseClass::Message(14));
+            IPCMessage newMessage(BaseClass::Message(8));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
 
             writer.Buffer(challengeSize, challenge);
@@ -1743,7 +1618,7 @@ namespace WPEFramework {
         }
 
         virtual OCDM::OCDM_RESULT CancelChallengeDataNetflix() override {
-            IPCMessage newMessage(BaseClass::Message(15));
+            IPCMessage newMessage(BaseClass::Message(9));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
 
             Invoke(newMessage);
@@ -1755,7 +1630,7 @@ namespace WPEFramework {
         }
 
         virtual OCDM::OCDM_RESULT StoreLicenseData(const uint8_t licenseData[], uint32_t licenseDataSize, uint8_t * secureStopId) override {
-            IPCMessage newMessage(BaseClass::Message(16));
+            IPCMessage newMessage(BaseClass::Message(10));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
 
             //writer.Buffer(licenseDataSize, licenseData);
@@ -1774,7 +1649,7 @@ namespace WPEFramework {
         }
 
         virtual OCDM::OCDM_RESULT InitDecryptContextByKid() override {
-            IPCMessage newMessage(BaseClass::Message(17));
+            IPCMessage newMessage(BaseClass::Message(11));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
 
             Invoke(newMessage);
@@ -1786,7 +1661,7 @@ namespace WPEFramework {
         }
 
         virtual OCDM::OCDM_RESULT CleanDecryptContext() override {
-            IPCMessage newMessage(BaseClass::Message(18));
+            IPCMessage newMessage(BaseClass::Message(12));
             RPC::Data::Frame::Writer writer(newMessage->Parameters().Writer());
 
             Invoke(newMessage);

@@ -184,10 +184,11 @@ void* opencdm_announce_proxy_stubs();
  */
 typedef enum {
     ERROR_NONE                    = 0,
+    ERROR_UNKNOWN                 = 1,
     ERROR_INVALID_ACCESSOR        = 0x80000001,
     ERROR_KEYSYSTEM_NOT_SUPPORTED = 0x80000002,
     ERROR_INVALID_SESSION         = 0x80000003,
-    ERROR_INVALID_DECRYPT_BUFFER  = 0x80000004
+    ERROR_INVALID_DECRYPT_BUFFER  = 0x80000004,
 } OpenCDMError;
 
 /**

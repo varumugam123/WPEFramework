@@ -21,7 +21,7 @@ namespace OCDM {
             uint32_t Status;
             uint8_t KeyId[17];
             uint8_t IVLength;
-            uint8_t IV[20];
+            uint8_t IV[24];
             uint16_t SubLength;
             uint8_t Sub[2048];
             bool InitWithLast15;
@@ -55,7 +55,7 @@ namespace OCDM {
         }
         void SetIV(const uint8_t ivDataLength, const uint8_t ivData[]) {
             Administration* admin = reinterpret_cast<Administration*>(AdministrationBuffer());
-            //ASSERT(ivDataLength <= sizeof(Administration::IV)); //TODO: Need to check why this is asserting
+            ASSERT(ivDataLength <= sizeof(Administration::IV));
             admin->IVLength = (ivDataLength > sizeof(Administration::IV) ? sizeof(Administration::IV) : ivDataLength);
             ::memcpy(admin->IV, ivData, admin->IVLength);
             if (admin->IVLength < sizeof(Administration::IV)) {
