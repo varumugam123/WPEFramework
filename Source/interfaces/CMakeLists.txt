@@ -26,6 +26,7 @@ set(PUBLIC_HEADERS
         IIPNetwork.h
         IKeyHandler.h
         IMemory.h
+        IMessenger.h
         INetflix.h
         IPlayGiga.h
         IPower.h
