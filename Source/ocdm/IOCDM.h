@@ -210,7 +210,8 @@ namespace OCDM {
 
         virtual OCDM_RESULT GetSecureStopIds(
                 const std::string & keySystem,
-                uint8_t * ids[],
+                uint8_t ids[],
+                uint8_t idSize,
                 uint32_t & count) = 0;
 
         virtual OCDM_RESULT GetSecureStop(
