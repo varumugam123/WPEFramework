@@ -223,19 +223,24 @@ public:
         }
     }
  
-    virtual ~IPCChannelServerType() {
+    ~IPCChannelServerType() override {
          TRACE_L1("Closing server in Process. %d", ProcessInfo().Id());
 
-            Close(infinite);
+         Close(infinite);
 
-            if (_clients.size() > 0) {
+         _factory->DestroyFactories();
+    }
 
-                TRACE_L1("Closing clients that should have been closed before destruction [%d].", static_cast<uint32_t>(_clients.size()));
-                CloseClients();
-            }
+    uint32_t Close(const uint32_t waitTime) {
+        uint32_t result = SocketListner::Close(infinite);
 
-            _factory->DestroyFactories();
+        if (result == Core::ERROR_NONE) {
+            // Server is going down. Close the clients.
+            result = CloseClients();
         }
+
+        return result;
+    }
 
     public:
         inline Core::ProxyType<Client> operator[](const uint32_t index)
